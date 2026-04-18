@@ -18,9 +18,22 @@ class SettingController extends Controller
     public function update(Request $request)
     {
         $fields = [
+            // Hero
             'hero_name', 'hero_title', 'hero_subtitle', 'hero_description',
-            'about_text', 'contact_email', 'contact_phone', 'contact_location',
-            'meta_title', 'meta_description', 'cv_url',
+            'hero_btn_projects', 'hero_btn_cv', 'cv_url', 'typed_strings',
+            // Stats
+            'years_experience', 'stat_years_label', 'stat_projects_label', 'stat_services_label',
+            // About
+            'about_text', 'about_tag', 'about_greeting', 'about_btn_contact', 'about_btn_projects', 'skills',
+            // Section titles
+            'services_tag', 'services_title',
+            'projects_tag', 'projects_title',
+            'contact_tag', 'contact_title', 'contact_form_title', 'contact_btn', 'contact_info_title',
+            'filter_all', 'filter_web', 'filter_mobile', 'featured_label', 'social_label',
+            // Contact info
+            'contact_email', 'contact_phone', 'contact_location',
+            // SEO
+            'meta_title', 'meta_description',
         ];
 
         foreach ($fields as $field) {

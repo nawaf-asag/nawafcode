@@ -19,17 +19,49 @@ class DatabaseSeeder extends Seeder
         );
 
         $settings = [
-            'hero_name'        => 'نواف عساج',
-            'hero_title'       => 'مطور برمجيات',
-            'hero_subtitle'    => 'Full Stack Developer',
-            'hero_description' => 'أبني تطبيقات ويب احترافية وعالية الأداء باستخدام أحدث التقنيات. شغوف بتحويل الأفكار إلى حلول رقمية مبتكرة.',
-            'about_text'       => 'مطور برمجيات متخصص في تطوير تطبيقات الويب الكاملة (Full Stack). أمتلك خبرة في بناء حلول برمجية متكاملة تجمع بين تصميم واجهات المستخدم الجذابة والبنية التحتية القوية للخوادم. أسعى دائماً لتقديم حلول عالية الجودة تلبي احتياجات العملاء وتتجاوز توقعاتهم.',
-            'contact_email'    => 'nawaf@example.com',
-            'contact_phone'    => '+966 5X XXX XXXX',
-            'contact_location' => 'المملكة العربية السعودية',
-            'meta_title'       => 'نواف عساج - مطور برمجيات',
-            'meta_description' => 'موقع نواف عساج الشخصي - مطور برمجيات متخصص في تطوير تطبيقات الويب',
-            'cv_url'           => '#',
+            // Hero
+            'hero_name'           => 'نواف عساج',
+            'hero_title'          => 'مطور برمجيات',
+            'hero_subtitle'       => 'Full Stack Developer',
+            'hero_description'    => 'أبني تطبيقات ويب احترافية وعالية الأداء باستخدام أحدث التقنيات. شغوف بتحويل الأفكار إلى حلول رقمية مبتكرة.',
+            'typed_strings'       => 'مطور برمجيات|Full Stack Developer|Web & Mobile Developer|Laravel Expert',
+            'hero_btn_projects'   => 'مشاهدة أعمالي',
+            'hero_btn_cv'         => 'تحميل السيرة الذاتية',
+            'cv_url'              => '#',
+            // Stats
+            'years_experience'    => '3',
+            'stat_years_label'    => 'سنوات خبرة',
+            'stat_projects_label' => 'مشروع منجز',
+            'stat_services_label' => 'خدمة متخصصة',
+            // About
+            'about_text'          => 'مطور برمجيات متخصص في تطوير تطبيقات الويب الكاملة (Full Stack). أمتلك خبرة في بناء حلول برمجية متكاملة تجمع بين تصميم واجهات المستخدم الجذابة والبنية التحتية القوية للخوادم.',
+            'about_tag'           => 'من أنا',
+            'about_greeting'      => 'مرحباً، أنا',
+            'about_btn_contact'   => 'تواصل معي',
+            'about_btn_projects'  => 'أعمالي',
+            'skills'              => "bi-filetype-php|PHP & Laravel\nbi-filetype-js|JavaScript & Vue.js\nbi-database|MySQL & PostgreSQL\nbi-git|Git & DevOps\nbi-phone|Flutter & Mobile\nbi-server|REST API & GraphQL",
+            // Section titles
+            'services_tag'        => 'ماذا أقدم',
+            'services_title'      => 'خدماتي المتخصصة',
+            'projects_tag'        => 'معرض الأعمال',
+            'projects_title'      => 'أبرز أعمالي',
+            'contact_tag'         => 'تواصل معي',
+            'contact_title'       => 'لنتحدث عن مشروعك',
+            'contact_form_title'  => 'أرسل لي رسالة',
+            'contact_info_title'  => 'معلومات التواصل',
+            'contact_btn'         => 'إرسال الرسالة',
+            'filter_all'          => 'الكل',
+            'filter_web'          => 'مواقع ويب',
+            'filter_mobile'       => 'تطبيقات موبايل',
+            'featured_label'      => 'مميز',
+            'social_label'        => 'تابعني على منصات التواصل الاجتماعي',
+            // Contact
+            'contact_email'       => 'nawaf@example.com',
+            'contact_phone'       => '+966 5X XXX XXXX',
+            'contact_location'    => 'المملكة العربية السعودية',
+            // SEO
+            'meta_title'          => 'نواف عساج - مطور برمجيات',
+            'meta_description'    => 'موقع نواف عساج الشخصي - مطور برمجيات متخصص في تطوير تطبيقات الويب',
         ];
         foreach ($settings as $key => $value) {
             Setting::updateOrCreate(['key' => $key], ['value' => $value]);
