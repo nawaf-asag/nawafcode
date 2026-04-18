@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
@@ -38,6 +39,11 @@ class SettingController extends Controller
             if ($old) Storage::disk('public')->delete($old);
             $path = $request->file('about_image')->store('settings', 'public');
             Setting::set('about_image', $path);
+        }
+
+        // Ensure storage is accessible (handles both symlink and copy methods)
+        if (!is_link(public_path('storage'))) {
+            Artisan::call('storage:copy');
         }
 
         return back()->with('success', 'تم حفظ الإعدادات بنجاح');

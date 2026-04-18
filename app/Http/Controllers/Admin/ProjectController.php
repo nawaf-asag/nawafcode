@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
@@ -39,6 +40,7 @@ class ProjectController extends Controller
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('projects', 'public');
+            if (!is_link(public_path('storage'))) Artisan::call('storage:copy');
         }
 
         Project::create($data);
@@ -71,6 +73,7 @@ class ProjectController extends Controller
         if ($request->hasFile('image')) {
             if ($project->image) Storage::disk('public')->delete($project->image);
             $data['image'] = $request->file('image')->store('projects', 'public');
+            if (!is_link(public_path('storage'))) Artisan::call('storage:copy');
         }
 
         $project->update($data);
