@@ -5,8 +5,33 @@
 <!-- ===== HERO ===== -->
 <section id="hero">
     <div class="container" style="position:relative;z-index:1;">
-        <div class="row align-items-center min-vh-100 g-5">
-            <div class="col-lg-7" data-aos="fade-right">
+        <div class="row align-items-center hero-row g-4 g-lg-5" style="min-height:100vh;padding-top:5rem;padding-bottom:3rem;">
+
+            <!-- الصورة: تظهر أولاً على الموبايل -->
+            <div class="col-lg-5 text-center order-1 order-lg-2" data-aos="fade-left" data-aos-delay="200">
+                <div class="float-anim">
+                    <div class="hero-avatar mx-auto">
+                        <div class="hero-avatar-inner">
+                            @if($settings['hero_image'] ?? null)
+                                <img src="{{ asset('storage/'.$settings['hero_image']) }}" alt="{{ $settings['hero_name'] }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                            @else
+                                <i class="bi bi-person-circle"></i>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <!-- Social Icons -->
+                <div class="social-links-section justify-content-center mt-3">
+                    @foreach($socialLinks as $link)
+                    <a href="{{ $link->url }}" class="social-link" target="_blank" title="{{ $link->platform }}">
+                        <i class="bi {{ $link->icon }}"></i>
+                    </a>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- النص: يظهر ثانياً على الموبايل -->
+            <div class="col-lg-7 hero-text-col order-2 order-lg-1" data-aos="fade-right">
                 <div class="hero-badge">
                     <i class="bi bi-stars me-1"></i>
                     {{ $settings['hero_subtitle'] ?? 'Full Stack Developer' }}
@@ -33,7 +58,7 @@
                         <span class="stat-number">{{ $projects->count() }}+</span>
                         <span class="stat-label">مشروع منجز</span>
                     </div>
-                    <div class="stat-item" style="border-right:1px solid rgba(99,102,241,0.2);padding-right:2rem;border-left:1px solid rgba(99,102,241,0.2);padding-left:2rem;">
+                    <div class="stat-item stat-divider" style="border-right:1px solid rgba(99,102,241,0.2);padding-right:2rem;border-left:1px solid rgba(99,102,241,0.2);padding-left:2rem;">
                         <span class="stat-number">{{ $services->count() }}+</span>
                         <span class="stat-label">خدمة متخصصة</span>
                     </div>
@@ -43,58 +68,38 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-5 text-center" data-aos="fade-left" data-aos-delay="200">
-                <div class="float-anim">
-                    <div class="hero-avatar mx-auto">
-                        <div class="hero-avatar-inner">
-                            @if($settings['hero_image'] ?? null)
-                                <img src="{{ asset('storage/'.$settings['hero_image']) }}" alt="{{ $settings['hero_name'] }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
-                            @else
-                                <i class="bi bi-person-circle"></i>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                <!-- Social Icons -->
-                <div class="social-links-section justify-content-center mt-4">
-                    @foreach($socialLinks as $link)
-                    <a href="{{ $link->url }}" class="social-link" target="_blank" title="{{ $link->platform }}">
-                        <i class="bi {{ $link->icon }}"></i>
-                    </a>
-                    @endforeach
-                </div>
-            </div>
+
         </div>
     </div>
 
     <!-- Decorative code elements -->
-    <div style="position:absolute;top:20%;left:5%;opacity:0.06;font-size:10rem;color:var(--primary);font-family:monospace;">&lt;/&gt;</div>
-    <div style="position:absolute;bottom:15%;right:5%;opacity:0.04;font-size:8rem;color:var(--secondary);font-family:monospace;">{}</div>
+    <div class="hero-deco" style="position:absolute;top:20%;left:5%;opacity:0.06;font-size:10rem;color:var(--primary);font-family:monospace;pointer-events:none;">&lt;/&gt;</div>
+    <div class="hero-deco" style="position:absolute;bottom:15%;right:5%;opacity:0.04;font-size:8rem;color:var(--secondary);font-family:monospace;pointer-events:none;">{}</div>
 </section>
 
 <!-- ===== ABOUT ===== -->
 <section id="about">
     <div class="container">
-        <div class="row g-5 align-items-center">
-            <div class="col-lg-5" data-aos="fade-right">
-                <div style="position:relative;">
-                    <div style="width:100%;padding-bottom:90%;background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(6,182,212,0.2));border-radius:24px;border:1px solid rgba(99,102,241,0.2);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;">
+        <div class="row g-4 g-lg-5 align-items-center">
+            <div class="col-lg-5 about-img-col" data-aos="fade-right">
+                <div style="position:relative;padding-bottom:1.5rem;padding-right:1rem;">
+                    <div class="about-img-box" style="width:100%;padding-bottom:90%;background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(6,182,212,0.2));border-radius:24px;border:1px solid rgba(99,102,241,0.2);overflow:hidden;position:relative;">
                         @if($settings['about_image'] ?? null)
                             <img src="{{ asset('storage/'.$settings['about_image']) }}" alt="About" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
                         @else
-                            <i class="bi bi-person-workspace" style="font-size:8rem;color:var(--primary);opacity:0.5;position:absolute;top:50%;transform:translateY(-50%);"></i>
+                            <i class="bi bi-person-workspace" style="font-size:6rem;color:var(--primary);opacity:0.5;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);"></i>
                         @endif
                     </div>
-                    <div style="position:absolute;bottom:-20px;right:-20px;width:120px;height:120px;border-radius:16px;background:var(--gradient);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;">
-                        <span style="font-size:1.8rem;font-weight:800;">3+</span>
-                        <span style="font-size:0.7rem;text-align:center;">سنوات<br>خبرة</span>
+                    <div class="about-badge-box" style="position:absolute;bottom:0;right:0;width:110px;height:110px;border-radius:16px;background:var(--gradient);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;box-shadow:0 8px 25px rgba(99,102,241,0.4);">
+                        <span style="font-size:1.7rem;font-weight:800;line-height:1;">3+</span>
+                        <span style="font-size:0.68rem;text-align:center;margin-top:0.2rem;">سنوات<br>خبرة</span>
                     </div>
                 </div>
             </div>
             <div class="col-lg-7" data-aos="fade-left" data-aos-delay="200">
                 <div class="section-tag"><i class="bi bi-person me-1"></i> من أنا</div>
-                <h2 class="section-title mb-3" style="text-align:right;">مرحباً، أنا <span style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{ $settings['hero_name'] ?? 'نواف عساج' }}</span></h2>
-                <p style="color:var(--text-muted);line-height:2;margin-bottom:2rem;">{{ $settings['about_text'] ?? '' }}</p>
+                <h2 class="section-title mb-3">مرحباً، أنا <span style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{ $settings['hero_name'] ?? 'نواف عساج' }}</span></h2>
+                <p style="color:var(--text-muted);line-height:2;margin-bottom:1.5rem;font-size:0.97rem;">{{ $settings['about_text'] ?? '' }}</p>
 
                 <div class="row g-2">
                     @php
@@ -108,10 +113,10 @@
                         ];
                     @endphp
                     @foreach($skills as $skill)
-                    <div class="col-6">
+                    <div class="col-6 col-sm-6">
                         <div class="skill-item">
                             <i class="bi {{ $skill['icon'] }} skill-icon"></i>
-                            <span style="font-weight:600;color:var(--text);font-size:0.9rem;">{{ $skill['name'] }}</span>
+                            <span style="font-weight:600;color:var(--text);font-size:0.88rem;">{{ $skill['name'] }}</span>
                         </div>
                     </div>
                     @endforeach
@@ -227,7 +232,7 @@
             <div class="section-divider"></div>
         </div>
 
-        <div class="row g-5">
+        <div class="row g-4">
             <!-- Contact Info -->
             <div class="col-lg-4" data-aos="fade-right">
                 <div class="contact-card">

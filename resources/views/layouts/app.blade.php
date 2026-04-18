@@ -676,11 +676,124 @@
         /* ===== TYPED CURSOR ===== */
         .typed-cursor { color: var(--primary); }
 
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
+        /* ===== RESPONSIVE - MOBILE ===== */
+
+        /* XS - 576px وأقل */
+        @media (max-width: 575.98px) {
+            section { padding: 3rem 0; }
+
+            /* Navbar */
+            .navbar { padding: 0.6rem 0; }
+            .navbar-brand { font-size: 1.2rem; }
+            #navMenu { margin-top: 0.5rem; padding: 0.5rem 0; border-top: 1px solid rgba(99,102,241,0.15); }
+            .nav-link { padding: 0.6rem 0.8rem !important; font-size: 0.95rem; }
+
+            /* Hero */
+            #hero { min-height: auto; padding: 6rem 0 3rem; }
+            .hero-badge { font-size: 0.8rem; padding: 0.3rem 1rem; margin-bottom: 1rem; }
+            .hero-name { font-size: 2.2rem; }
+            .hero-title { font-size: 1.1rem; }
+            .hero-desc { font-size: 0.95rem; max-width: 100%; }
+            .hero-btns { margin-top: 1.5rem; gap: 0.7rem; }
+            .btn-primary-custom, .btn-outline-custom { padding: 0.7rem 1.4rem; font-size: 0.9rem; width: 100%; justify-content: center; }
+            .hero-stats { gap: 0; justify-content: space-around; margin-top: 2rem; }
+            .stat-item { flex: 1; }
+            .stat-item.stat-divider { border-right: 1px solid rgba(99,102,241,0.2) !important; border-left: 1px solid rgba(99,102,241,0.2) !important; }
+            .stat-number { font-size: 1.6rem; }
+
+            /* Avatar */
+            .hero-avatar { width: 180px; height: 180px; }
+            .hero-avatar-inner { width: 170px; height: 170px; font-size: 4rem; }
+            .float-anim { animation: none; }
+
+            /* Social links */
+            .social-links-section { gap: 0.6rem; }
+            .social-link { width: 42px; height: 42px; font-size: 1.1rem; }
+
+            /* About */
+            .about-img-box { margin-bottom: 3.5rem !important; }
+            .about-badge-box { width: 90px !important; height: 90px !important; bottom: -15px !important; right: -10px !important; }
+            .about-badge-box span:first-child { font-size: 1.4rem !important; }
+            .skill-item { padding: 0.6rem 0.8rem; }
+            .skill-item span { font-size: 0.82rem !important; }
+
+            /* Services */
+            .service-card { padding: 1.5rem; }
+            .service-icon { width: 52px; height: 52px; font-size: 1.5rem; margin-bottom: 1rem; }
+            .service-title { font-size: 1.05rem; }
+            .service-desc { font-size: 0.88rem; }
+
+            /* Projects */
+            .filter-btns { gap: 0.5rem; margin-bottom: 2rem; }
+            .filter-btn { padding: 0.4rem 1rem; font-size: 0.85rem; }
+            .project-img { height: 170px; }
+            .project-body { padding: 1.2rem; }
+
+            /* Contact */
+            .contact-card { padding: 1.5rem; }
+            .contact-info-item { padding: 0.8rem 0; }
+            .contact-icon { width: 40px; height: 40px; font-size: 1rem; }
+
+            /* Section header */
+            .section-header { margin-bottom: 2.5rem; }
+            .section-title { font-size: 1.7rem; }
+
+            /* Scroll top */
+            #scrollTop { left: 1rem; bottom: 1rem; width: 40px; height: 40px; font-size: 1rem; }
+
+            /* Decorative elements */
+            .hero-deco { display: none; }
+        }
+
+        /* SM - 576px إلى 767px */
+        @media (min-width: 576px) and (max-width: 767.98px) {
             section { padding: 3.5rem 0; }
-            .hero-avatar { width: 220px; height: 220px; }
-            .hero-avatar-inner { width: 208px; height: 208px; font-size: 5rem; }
+            #hero { min-height: auto; padding: 6rem 0 3rem; }
+            .hero-avatar { width: 200px; height: 200px; }
+            .hero-avatar-inner { width: 190px; height: 190px; font-size: 4.5rem; }
+            .btn-primary-custom, .btn-outline-custom { padding: 0.75rem 1.5rem; font-size: 0.95rem; }
+            .hero-stats { gap: 1rem; margin-top: 2rem; }
+            .contact-card { padding: 2rem; }
+            .hero-deco { display: none; }
+        }
+
+        /* MD - 768px إلى 991px */
+        @media (min-width: 768px) and (max-width: 991.98px) {
+            section { padding: 4rem 0; }
+            #hero { min-height: auto; padding: 7rem 0 4rem; }
+            .hero-avatar { width: 240px; height: 240px; }
+            .hero-avatar-inner { width: 228px; height: 228px; font-size: 5.5rem; }
+            .hero-stats { gap: 1.5rem; }
+            .contact-card { padding: 2rem; }
+            .hero-deco { opacity: 0.03 !important; }
+        }
+
+        /* تحسينات عامة للموبايل */
+        @media (max-width: 991.98px) {
+            /* Navbar mobile menu */
+            .navbar-collapse .navbar-nav { padding: 0.5rem 0; }
+            .navbar-collapse .nav-link { border-radius: 8px; margin-bottom: 0.2rem; }
+            .navbar-collapse .admin-btn-mobile {
+                display: block;
+                margin: 0.5rem 0 0;
+                text-align: center;
+                padding: 0.6rem 1rem !important;
+                border-radius: 10px !important;
+            }
+
+            /* Hero - الصورة فوق النص على الموبايل */
+            .hero-row { flex-direction: column-reverse; }
+            .hero-text-col { text-align: center; }
+            .hero-desc { margin: 0 auto; }
+            .hero-btns { justify-content: center; }
+            .hero-stats { justify-content: center; }
+            .social-links-section { justify-content: center !important; }
+
+            /* About */
+            .about-img-col { padding-bottom: 2rem; }
+
+            /* Section */
+            .section-header { margin-bottom: 3rem; }
         }
 
         /* ===== ALERT ===== */
@@ -705,18 +818,32 @@
 <nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
     <div class="container">
         <a class="navbar-brand" href="#hero">{{ $settings['hero_name'] ?? 'نواف عساج' }}</a>
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-            <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+
+        <!-- زر القائمة للموبايل -->
+        <button class="navbar-toggler border-0 p-1" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-label="القائمة">
+            <span style="display:flex;flex-direction:column;gap:5px;width:24px;">
+                <span style="display:block;height:2px;background:var(--primary);border-radius:2px;transition:all 0.3s;"></span>
+                <span style="display:block;height:2px;background:var(--primary);border-radius:2px;transition:all 0.3s;"></span>
+                <span style="display:block;height:2px;background:var(--primary);border-radius:2px;transition:all 0.3s;"></span>
+            </span>
         </button>
+
         <div class="collapse navbar-collapse" id="navMenu">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a class="nav-link" href="#about">من أنا</a></li>
                 <li class="nav-item"><a class="nav-link" href="#services">خدماتي</a></li>
                 <li class="nav-item"><a class="nav-link" href="#projects">أعمالي</a></li>
                 <li class="nav-item"><a class="nav-link" href="#contact">تواصل</a></li>
+                <!-- زر لوحة التحكم داخل القائمة على الموبايل -->
+                <li class="nav-item d-lg-none mt-2">
+                    <a href="{{ route('admin.login') }}" class="nav-link" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.25);border-radius:10px;color:var(--primary) !important;">
+                        <i class="bi bi-shield-lock me-1"></i> لوحة التحكم
+                    </a>
+                </li>
             </ul>
-            <a href="{{ route('admin.login') }}" class="btn btn-sm" style="background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);color:var(--primary);border-radius:50px;padding:0.4rem 1.2rem;font-family:'Cairo',sans-serif;">
-                <i class="bi bi-shield-lock me-1"></i> لوحة التحكم
+            <!-- زر لوحة التحكم للسطح المكتب -->
+            <a href="{{ route('admin.login') }}" class="btn btn-sm d-none d-lg-inline-flex align-items-center gap-1" style="background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);color:var(--primary);border-radius:50px;padding:0.4rem 1.2rem;font-family:'Cairo',sans-serif;">
+                <i class="bi bi-shield-lock"></i> لوحة التحكم
             </a>
         </div>
     </div>
