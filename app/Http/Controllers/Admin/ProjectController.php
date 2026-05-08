@@ -42,11 +42,7 @@ class ProjectController extends Controller
         $data['active']   = $request->boolean('active');
         $data['featured'] = $request->boolean('featured');
 
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('projects', 'public');
-            if (!is_link(public_path('storage'))) Artisan::call('storage:copy');
-        }
-
+        $data['image'] = $this->resolveImage($request, 'image', null);
         Project::create($data);
         return redirect()->route('admin.projects.index')->with('success', 'تمت إضافة المشروع بنجاح');
     }
@@ -78,20 +74,39 @@ class ProjectController extends Controller
         $data['active']   = $request->boolean('active');
         $data['featured'] = $request->boolean('featured');
 
-        if ($request->hasFile('image')) {
-            if ($project->image) Storage::disk('public')->delete($project->image);
-            $data['image'] = $request->file('image')->store('projects', 'public');
-            if (!is_link(public_path('storage'))) Artisan::call('storage:copy');
-        }
-
+        $data['image'] = $this->resolveImage($request, 'image', $project->image);
         $project->update($data);
         return redirect()->route('admin.projects.index')->with('success', 'تم تحديث المشروع بنجاح');
     }
 
     public function destroy(Project $project)
     {
-        if ($project->image) Storage::disk('public')->delete($project->image);
+        // Don't delete the image file — it might be used elsewhere via media library
         $project->delete();
         return redirect()->route('admin.projects.index')->with('success', 'تم حذف المشروع');
+    }
+
+    /**
+     * Resolve image source — file upload takes priority, then library path,
+     * then fall back to existing value.
+     */
+    private function resolveImage(Request $request, string $field, ?string $current): ?string
+    {
+        if ($request->hasFile($field)) {
+            $path = $request->file($field)->store('media', 'public');
+            \App\Models\Media::create([
+                'original_name' => $request->file($field)->getClientOriginalName(),
+                'path'          => $path,
+                'mime_type'     => $request->file($field)->getMimeType(),
+                'size'          => $request->file($field)->getSize(),
+            ]);
+            if (!is_link(public_path('storage'))) Artisan::call('storage:copy');
+            return $path;
+        }
+
+        $picked = $request->input($field . '_path');
+        if ($picked !== null) return $picked ?: null;
+
+        return $current;
     }
 }

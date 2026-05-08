@@ -70,13 +70,20 @@ class SettingController extends Controller
             Setting::set($field, $request->input($field, ''));
         }
 
-        // Image uploads
+        // Image fields — accept either uploaded file OR a path picked from media library
         foreach (self::IMAGE_FIELDS as $field) {
             if ($request->hasFile($field)) {
-                $old = Setting::where('key', $field)->value('value');
-                if ($old) Storage::disk('public')->delete($old);
-                $path = $request->file($field)->store('settings', 'public');
+                $file = $request->file($field);
+                $path = $file->store('media', 'public');
+                \App\Models\Media::create([
+                    'original_name' => $file->getClientOriginalName(),
+                    'path'          => $path,
+                    'mime_type'     => $file->getMimeType(),
+                    'size'          => $file->getSize(),
+                ]);
                 Setting::set($field, $path);
+            } elseif ($request->has($field . '_path')) {
+                Setting::set($field, $request->input($field . '_path') ?: '');
             }
         }
 

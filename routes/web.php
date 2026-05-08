@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\SocialLinkController;
 use App\Http\Controllers\Admin\SettingController;
@@ -48,6 +49,13 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::resource('services', ServiceController::class)->except(['show']);
     Route::resource('projects', ProjectController::class)->except(['show']);
     Route::resource('brands',   BrandController::class)->except(['show']);
+
+    // Media library
+    Route::get   ('media',                  [MediaController::class, 'index'])  ->name('media.index');
+    Route::post  ('media',                  [MediaController::class, 'store'])  ->name('media.store');
+    Route::delete('media/{medium}',         [MediaController::class, 'destroy'])->name('media.destroy');
+    Route::get   ('media/picker/list',      [MediaController::class, 'pickerList'])  ->name('media.picker.list');
+    Route::post  ('media/picker/upload',    [MediaController::class, 'pickerUpload'])->name('media.picker.upload');
 
     Route::get('contacts',          [ContactController::class, 'index'])->name('contacts.index');
     Route::get('contacts/{contact}',[ContactController::class, 'show'])->name('contacts.show');

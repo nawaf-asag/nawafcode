@@ -445,6 +445,9 @@
         <a href="{{ route('admin.brands.index') }}" class="sidebar-link {{ request()->routeIs('admin.brands.*') ? 'active' : '' }}">
             <i class="bi bi-award"></i> البراندات
         </a>
+        <a href="{{ route('admin.media.index') }}" class="sidebar-link {{ request()->routeIs('admin.media.*') ? 'active' : '' }}">
+            <i class="bi bi-images"></i> مكتبة الصور
+        </a>
 
         <div class="nav-section-label">التفاعل</div>
         <a href="{{ route('admin.contacts.index') }}" class="sidebar-link {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}">
@@ -524,6 +527,8 @@
         @yield('content')
     </main>
 </div>
+
+@include('admin.partials.media-picker-modal')
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>

@@ -82,27 +82,21 @@
                         <hr style="border-color:rgba(99,102,241,0.15);margin:0.5rem 0;">
 
                         <div class="col-md-6">
-                            <label class="form-label">أيقونة الموقع (Favicon)</label>
-                            @if($img('site_favicon'))
-                                <div class="mb-2 d-flex align-items-center gap-2">
-                                    <img src="{{ asset('storage/'.$img('site_favicon')) }}" alt="favicon"
-                                         style="width:48px;height:48px;background:#fff;padding:4px;border-radius:8px;object-fit:contain;">
-                                    <small style="color:var(--text-muted);">الأيقونة الحالية</small>
-                                </div>
-                            @endif
-                            <input type="file" name="site_favicon" class="form-control" accept="image/png,image/jpeg,image/svg+xml,image/webp,image/x-icon">
+                            @include('admin.partials.image-picker', [
+                                'name'    => 'site_favicon',
+                                'current' => $img('site_favicon'),
+                                'label'   => 'أيقونة الموقع (Favicon)',
+                                'accept'  => 'image/png,image/jpeg,image/svg+xml,image/webp,image/x-icon',
+                            ])
                             <small style="color:var(--text-muted);">PNG/SVG شفاف، 512×512 موصى به</small>
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label">صورة المشاركة الاجتماعية (OG Image)</label>
-                            @if($img('og_image'))
-                                <div class="mb-2">
-                                    <img src="{{ asset('storage/'.$img('og_image')) }}" alt="OG"
-                                         style="max-width:160px;max-height:90px;border-radius:6px;">
-                                </div>
-                            @endif
-                            <input type="file" name="og_image" class="form-control" accept="image/*">
+                            @include('admin.partials.image-picker', [
+                                'name'    => 'og_image',
+                                'current' => $img('og_image'),
+                                'label'   => 'صورة المشاركة الاجتماعية (OG Image)',
+                            ])
                             <small style="color:var(--text-muted);">1200×630 — تظهر عند مشاركة الرابط في وسائل التواصل</small>
                         </div>
 
@@ -202,11 +196,11 @@
                             <input type="text" name="cv_url" class="form-control" value="{{ $val('cv_url') }}" placeholder="https://...">
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">صورة الملف الشخصي</label>
-                            @if($img('hero_image'))
-                                <div class="mb-2"><img src="{{ asset('storage/'.$img('hero_image')) }}" alt="" style="width:80px;height:80px;border-radius:50%;object-fit:cover;"></div>
-                            @endif
-                            <input type="file" name="hero_image" class="form-control" accept="image/*">
+                            @include('admin.partials.image-picker', [
+                                'name'    => 'hero_image',
+                                'current' => $img('hero_image'),
+                                'label'   => 'صورة الملف الشخصي',
+                            ])
                         </div>
 
                     </div>
@@ -325,11 +319,11 @@
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label">صورة قسم "من أنا"</label>
-                            @if($img('about_image'))
-                                <div class="mb-2"><img src="{{ asset('storage/'.$img('about_image')) }}" alt="" style="max-width:160px;border-radius:8px;"></div>
-                            @endif
-                            <input type="file" name="about_image" class="form-control" accept="image/*">
+                            @include('admin.partials.image-picker', [
+                                'name'    => 'about_image',
+                                'current' => $img('about_image'),
+                                'label'   => 'صورة قسم "من أنا"',
+                            ])
                         </div>
                     </div>
                 </div>

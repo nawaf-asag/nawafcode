@@ -23,7 +23,7 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         $data = $this->validateData($request);
-        $data['logo'] = $this->handleLogo($request, null);
+        $data['logo']   = $this->resolveImage($request, 'logo', null);
         $data['active'] = $request->boolean('active');
         Brand::create($data);
 
@@ -38,8 +38,7 @@ class BrandController extends Controller
     public function update(Request $request, Brand $brand)
     {
         $data = $this->validateData($request);
-        $logo = $this->handleLogo($request, $brand->logo);
-        if ($logo !== null) $data['logo'] = $logo;
+        $data['logo']   = $this->resolveImage($request, 'logo', $brand->logo);
         $data['active'] = $request->boolean('active');
         $brand->update($data);
 
@@ -48,9 +47,29 @@ class BrandController extends Controller
 
     public function destroy(Brand $brand)
     {
-        if ($brand->logo) Storage::disk('public')->delete($brand->logo);
+        // Don't delete file — it may be reused via media library
         $brand->delete();
         return redirect()->route('admin.brands.index')->with('success', 'تم حذف البراند');
+    }
+
+    private function resolveImage(Request $request, string $field, ?string $current): ?string
+    {
+        if ($request->hasFile($field)) {
+            $path = $request->file($field)->store('media', 'public');
+            \App\Models\Media::create([
+                'original_name' => $request->file($field)->getClientOriginalName(),
+                'path'          => $path,
+                'mime_type'     => $request->file($field)->getMimeType(),
+                'size'          => $request->file($field)->getSize(),
+            ]);
+            if (! is_link(public_path('storage'))) \Illuminate\Support\Facades\Artisan::call('storage:copy');
+            return $path;
+        }
+
+        $picked = $request->input($field . '_path');
+        if ($picked !== null) return $picked ?: null;
+
+        return $current;
     }
 
     private function validateData(Request $request): array
@@ -66,10 +85,4 @@ class BrandController extends Controller
         ]);
     }
 
-    private function handleLogo(Request $request, ?string $existing): ?string
-    {
-        if (! $request->hasFile('logo')) return null;
-        if ($existing) Storage::disk('public')->delete($existing);
-        return $request->file('logo')->store('brands', 'public');
-    }
 }

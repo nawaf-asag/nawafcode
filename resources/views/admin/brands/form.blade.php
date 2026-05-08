@@ -51,17 +51,14 @@
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label">شعار البراند (صورة) *</label>
-                            @if($brand->logo)
-                                <div class="mb-2">
-                                    <img src="{{ asset('storage/'.$brand->logo) }}" alt="{{ $brand->name }}"
-                                         style="max-width:140px;max-height:80px;background:#fff;padding:6px;border-radius:8px;">
-                                </div>
-                            @endif
-                            <input type="file" name="logo" class="form-control" accept="image/*" {{ $brand->exists && $brand->logo ? '' : 'required' }}>
-                            <div style="font-size:0.78rem;color:var(--text-muted);margin-top:0.4rem;">
-                                PNG / SVG / JPG / WEBP — حتى 2 ميجا. (يُفضّل صورة شفافة بخلفية فارغة)
-                            </div>
+                            @include('admin.partials.image-picker', [
+                                'name'    => 'logo',
+                                'current' => $brand->logo,
+                                'label'   => 'شعار البراند (صورة)',
+                            ])
+                            <small style="color:var(--text-muted);">
+                                ارفع صورة جديدة، أو اختر من المكتبة. يُفضّل PNG/SVG شفاف.
+                            </small>
                         </div>
 
                         <div class="col-12">

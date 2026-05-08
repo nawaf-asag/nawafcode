@@ -82,14 +82,12 @@
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label">صورة المشروع</label>
-                            @if($project->image)
-                                <div class="mb-2">
-                                    <img src="{{ asset('storage/'.$project->image) }}" style="height:100px;border-radius:8px;object-fit:cover;">
-                                </div>
-                            @endif
-                            <input type="file" name="image" class="form-control" accept="image/*">
-                            <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.3rem;">الحجم الأقصى: 2MB - الصيغ: JPG, PNG, WebP</div>
+                            @include('admin.partials.image-picker', [
+                                'name'    => 'image',
+                                'current' => $project->image,
+                                'label'   => 'صورة المشروع',
+                            ])
+                            <small style="color:var(--text-muted);">JPG / PNG / WebP — حتى 2MB. يمكن الاختيار من المكتبة.</small>
                         </div>
 
                         <div class="col-md-6">
