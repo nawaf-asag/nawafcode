@@ -1062,50 +1062,35 @@ section { padding: clamp(3rem, 8vw, 5rem) 0; }
     line-height: 1.7;
 }
 
-/* Slider container */
+/* Slider container — JS-driven smooth scroll, drag-enabled */
 .brands-slider {
-    overflow: hidden;
     position: relative;
+    overflow-x: auto;
+    overflow-y: hidden;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-overflow-style: none;        /* hide scrollbar IE/Edge */
+    scrollbar-width: none;           /* hide scrollbar Firefox */
     -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
             mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+    scroll-behavior: auto;           /* don't smooth-scroll our auto increments */
 }
+.brands-slider::-webkit-scrollbar { display: none; }
+.brands-slider.grabbing { cursor: grabbing; }
+.brands-slider.grabbing .brand-card { pointer-events: none; }
 
 /* Track that holds (duplicated) brand cards */
 .brands-track {
     display: flex;
-    gap: 1.2rem;
     width: max-content;
-    animation: brands-scroll 35s linear infinite;
-    will-change: transform;
+    will-change: scroll-position;
 }
 
-/* Pause when user hovers anywhere in the slider */
-.brands-slider:hover .brands-track,
-.brands-slider:focus-within .brands-track {
-    animation-play-state: paused;
-}
-
-/* RTL: scroll the opposite direction */
-[dir="rtl"] .brands-track {
-    animation-direction: reverse;
-}
-
-@keyframes brands-scroll {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
-}
-
-/* Reduce motion: stop animation, allow native scroll */
+/* Reduce motion: just rely on native scroll, no JS auto-scroll */
 @media (prefers-reduced-motion: reduce) {
-    .brands-slider {
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-    }
-    .brands-track {
-        animation: none;
-        width: auto;
-    }
-    .brand-card { scroll-snap-align: start; }
+    .brands-slider { scroll-snap-type: x mandatory; }
+    .brand-card    { scroll-snap-align: start; }
 }
 
 .brand-card {
@@ -1114,6 +1099,7 @@ section { padding: clamp(3rem, 8vw, 5rem) 0; }
     border-radius: var(--radius-lg);
     flex: 0 0 auto;
     width: clamp(150px, 22vw, 200px);
+    margin-inline-end: 1.2rem;       /* spacing between cards (replaces parent gap) */
     aspect-ratio: 16 / 9;
     display: flex;
     align-items: center;

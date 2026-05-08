@@ -238,3 +238,112 @@ window.addEventListener('load', () => {
     if (!el) return;
     el.setAttribute('data-text', el.textContent.trim());
 })();
+
+/* ============================================
+   Brands Slider — auto-scroll, draggable, seamless loop
+   ============================================ */
+(function initBrandsSlider() {
+    const slider = document.querySelector('.brands-slider');
+    const track  = document.querySelector('.brands-track');
+    if (!slider || !track) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    // Force LTR scroll math regardless of page direction (logos are direction-neutral)
+    slider.setAttribute('dir', 'ltr');
+
+    const SPEED = 1.5;                  // px per frame ≈ 90 px/sec @60fps
+    const PAUSE_AFTER_DRAG = 1500;      // ms
+
+    let halfWidth   = 0;
+    let isDown      = false;
+    let startX      = 0;
+    let scrollStart = 0;
+    let pausedUntil = 0;
+    let hovering    = false;
+    let dragMoved   = false;            // track whether a drag actually happened
+
+    function recalc() {
+        // The track contains 2 identical sets — half = one set width
+        halfWidth = track.scrollWidth / 2;
+    }
+
+    function normalize() {
+        if (!halfWidth) return;
+        // Wrap scrollLeft into [0, halfWidth) seamlessly
+        if (slider.scrollLeft >= halfWidth) slider.scrollLeft -= halfWidth;
+        else if (slider.scrollLeft < 0)     slider.scrollLeft += halfWidth;
+    }
+
+    function tick() {
+        if (!isDown && !hovering && Date.now() > pausedUntil) {
+            slider.scrollLeft += SPEED;
+            normalize();
+        }
+        requestAnimationFrame(tick);
+    }
+
+    // ===== Pointer drag =====
+    slider.addEventListener('pointerdown', (e) => {
+        isDown    = true;
+        dragMoved = false;
+        slider.classList.add('grabbing');
+        startX      = e.pageX;
+        scrollStart = slider.scrollLeft;
+        try { slider.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+
+    slider.addEventListener('pointermove', (e) => {
+        if (!isDown) return;
+        const dx = e.pageX - startX;
+        if (Math.abs(dx) > 3) dragMoved = true;
+        slider.scrollLeft = scrollStart - dx;
+        normalize();
+    });
+
+    function endDrag(e) {
+        if (!isDown) return;
+        isDown = false;
+        slider.classList.remove('grabbing');
+        pausedUntil = Date.now() + PAUSE_AFTER_DRAG;
+        try { slider.releasePointerCapture(e.pointerId); } catch (_) {}
+    }
+    slider.addEventListener('pointerup',     endDrag);
+    slider.addEventListener('pointercancel', endDrag);
+
+    // Prevent click-through after a drag (so brand-visit-link doesn't trigger)
+    slider.addEventListener('click', (e) => {
+        if (dragMoved) {
+            e.preventDefault();
+            e.stopPropagation();
+            dragMoved = false;
+        }
+    }, true);
+
+    // ===== Hover pause (desktop) =====
+    if (!window.matchMedia('(pointer: coarse)').matches) {
+        slider.addEventListener('mouseenter', () => { hovering = true; });
+        slider.addEventListener('mouseleave', () => { hovering = false; });
+    }
+
+    // ===== Wheel scroll (horizontal) =====
+    slider.addEventListener('wheel', (e) => {
+        // Convert vertical wheel to horizontal scroll
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+            slider.scrollLeft += e.deltaY;
+            normalize();
+            pausedUntil = Date.now() + 1000;
+            e.preventDefault();
+        }
+    }, { passive: false });
+
+    // ===== Init =====
+    function start() {
+        recalc();
+        slider.scrollLeft = 0;
+        requestAnimationFrame(tick);
+    }
+    if (document.readyState === 'complete') start();
+    else window.addEventListener('load', start);
+
+    window.addEventListener('resize', recalc);
+})();
