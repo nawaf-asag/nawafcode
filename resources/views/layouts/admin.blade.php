@@ -442,6 +442,9 @@
         <a href="{{ route('admin.projects.index') }}" class="sidebar-link {{ request()->routeIs('admin.projects.*') ? 'active' : '' }}">
             <i class="bi bi-grid-3x3-gap"></i> الأعمال
         </a>
+        <a href="{{ route('admin.brands.index') }}" class="sidebar-link {{ request()->routeIs('admin.brands.*') ? 'active' : '' }}">
+            <i class="bi bi-award"></i> البراندات
+        </a>
 
         <div class="nav-section-label">التفاعل</div>
         <a href="{{ route('admin.contacts.index') }}" class="sidebar-link {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}">

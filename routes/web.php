@@ -2,9 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\SocialLinkController;
 use App\Http\Controllers\Admin\SettingController;
@@ -12,6 +14,11 @@ use App\Http\Controllers\Admin\SettingController;
 // Frontend
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::post('/contact', [HomeController::class, 'contact'])->name('contact');
+
+// Language switcher
+Route::get('/lang/{locale}', [LanguageController::class, 'switch'])
+    ->whereIn('locale', ['ar', 'en'])
+    ->name('lang.switch');
 
 // Auth
 Route::get('/admin/login', function () { return view('admin.login'); })->name('admin.login')->middleware('guest');
@@ -40,6 +47,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
     Route::resource('services', ServiceController::class)->except(['show']);
     Route::resource('projects', ProjectController::class)->except(['show']);
+    Route::resource('brands',   BrandController::class)->except(['show']);
 
     Route::get('contacts',          [ContactController::class, 'index'])->name('contacts.index');
     Route::get('contacts/{contact}',[ContactController::class, 'show'])->name('contacts.show');

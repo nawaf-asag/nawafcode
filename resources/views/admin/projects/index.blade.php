@@ -24,6 +24,7 @@
                     <th>الصورة</th>
                     <th>العنوان</th>
                     <th>الفئة</th>
+                    <th>السنة</th>
                     <th>التقنيات</th>
                     <th>مميز</th>
                     <th>الحالة</th>
@@ -49,8 +50,18 @@
                             @case('web') <span style="color:var(--secondary);font-size:0.85rem;">ويب</span> @break
                             @case('mobile') <span style="color:var(--accent);font-size:0.85rem;">موبايل</span> @break
                             @case('api') <span style="color:#a78bfa;font-size:0.85rem;">API</span> @break
+                            @case('support') <span style="color:#34d399;font-size:0.85rem;"><i class="bi bi-headset me-1"></i>دعم فني</span> @break
                             @default {{ $project->category }}
                         @endswitch
+                    </td>
+                    <td style="color:var(--text-muted);font-size:0.85rem;white-space:nowrap;">
+                        @if($project->year_from && $project->year_to)
+                            {{ $project->year_from }} – {{ $project->year_to }}
+                        @elseif($project->year_from)
+                            {{ $project->year_from }} – <span style="color:var(--accent);">الآن</span>
+                        @else
+                            &mdash;
+                        @endif
                     </td>
                     <td style="color:var(--text-muted);font-size:0.8rem;max-width:150px;">{{ Str::limit($project->technologies, 40) }}</td>
                     <td>

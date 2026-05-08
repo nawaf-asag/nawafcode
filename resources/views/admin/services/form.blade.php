@@ -18,11 +18,15 @@
                     @if($service->exists) @method('PUT') @endif
 
                     <div class="row g-3">
-                        <div class="col-md-8">
-                            <label class="form-label">عنوان الخدمة *</label>
+                        <div class="col-md-6">
+                            <label class="form-label">عنوان الخدمة — عربي *</label>
                             <input type="text" name="title" class="form-control" value="{{ old('title', $service->title) }}" placeholder="مثال: تطوير الويب" required>
                         </div>
                         <div class="col-md-4">
+                            <label class="form-label">Title — English</label>
+                            <input type="text" name="title_en" class="form-control" dir="ltr" value="{{ old('title_en', $service->title_en) }}" placeholder="e.g. Web Development">
+                        </div>
+                        <div class="col-md-2">
                             <label class="form-label">الترتيب</label>
                             <input type="number" name="order" class="form-control" value="{{ old('order', $service->order ?? 0) }}" min="0">
                         </div>
@@ -40,9 +44,14 @@
                             </div>
                         </div>
 
-                        <div class="col-12">
-                            <label class="form-label">الوصف *</label>
-                            <textarea name="description" class="form-control" rows="4" placeholder="وصف الخدمة..." required>{{ old('description', $service->description) }}</textarea>
+                        <div class="col-md-6">
+                            <label class="form-label">الوصف — عربي *</label>
+                            <textarea name="description" class="form-control" rows="5" placeholder="وصف الخدمة..." required>{{ old('description', $service->description) }}</textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Description — English</label>
+                            <textarea name="description_en" class="form-control" rows="5" dir="ltr" placeholder="Service description...">{{ old('description_en', $service->description_en) }}</textarea>
+                            <small style="color:var(--text-muted);">يستخدم العربي إذا تركتها فارغة</small>
                         </div>
 
                         <div class="col-12">

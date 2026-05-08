@@ -1,0 +1,27 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('brands', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('logo')->nullable();          // path to uploaded logo (storage)
+            $table->string('icon')->nullable();          // bootstrap-icon class as fallback
+            $table->string('website')->nullable();
+            $table->string('contribution')->nullable();  // short label, e.g. "تطوير الموقع" / "Website development"
+            $table->unsignedInteger('order')->default(0);
+            $table->boolean('active')->default(true);
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('brands');
+    }
+};

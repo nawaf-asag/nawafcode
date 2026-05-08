@@ -23,16 +23,20 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'title'        => 'required|string|max:200',
-            'description'  => 'required|string',
-            'category'     => 'required|string|max:100',
-            'technologies' => 'nullable|string|max:500',
-            'project_url'  => 'nullable|url|max:500',
-            'github_url'   => 'nullable|url|max:500',
-            'order'        => 'integer|min:0',
-            'active'       => 'boolean',
-            'featured'     => 'boolean',
-            'image'        => 'nullable|image|max:2048',
+            'title'           => 'required|string|max:200',
+            'title_en'        => 'nullable|string|max:200',
+            'description'     => 'required|string',
+            'description_en'  => 'nullable|string',
+            'category'        => 'required|string|max:100',
+            'technologies'    => 'nullable|string|max:500',
+            'year_from'       => 'nullable|integer|min:1990|max:2100',
+            'year_to'         => 'nullable|integer|min:1990|max:2100',
+            'project_url'     => 'nullable|url|max:500',
+            'github_url'      => 'nullable|url|max:500',
+            'order'           => 'integer|min:0',
+            'active'          => 'boolean',
+            'featured'        => 'boolean',
+            'image'           => 'nullable|image|max:2048',
         ]);
 
         $data['active']   = $request->boolean('active');
@@ -55,16 +59,20 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project)
     {
         $data = $request->validate([
-            'title'        => 'required|string|max:200',
-            'description'  => 'required|string',
-            'category'     => 'required|string|max:100',
-            'technologies' => 'nullable|string|max:500',
-            'project_url'  => 'nullable|url|max:500',
-            'github_url'   => 'nullable|url|max:500',
-            'order'        => 'integer|min:0',
-            'active'       => 'boolean',
-            'featured'     => 'boolean',
-            'image'        => 'nullable|image|max:2048',
+            'title'           => 'required|string|max:200',
+            'title_en'        => 'nullable|string|max:200',
+            'description'     => 'required|string',
+            'description_en'  => 'nullable|string',
+            'category'        => 'required|string|max:100',
+            'technologies'    => 'nullable|string|max:500',
+            'year_from'       => 'nullable|integer|min:1990|max:2100',
+            'year_to'         => 'nullable|integer|min:1990|max:2100',
+            'project_url'     => 'nullable|url|max:500',
+            'github_url'      => 'nullable|url|max:500',
+            'order'           => 'integer|min:0',
+            'active'          => 'boolean',
+            'featured'        => 'boolean',
+            'image'           => 'nullable|image|max:2048',
         ]);
 
         $data['active']   = $request->boolean('active');

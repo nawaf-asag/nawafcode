@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -9,53 +10,78 @@ use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
+    /** Fields editable in BOTH Arabic and English (textual content) */
+    private const BILINGUAL_FIELDS = [
+        // Hero
+        'hero_name', 'hero_title', 'hero_subtitle', 'hero_description',
+        'hero_btn_projects', 'hero_btn_cv', 'typed_strings',
+        // Stats labels
+        'stat_years_label', 'stat_projects_label', 'stat_services_label',
+        // About
+        'about_text', 'about_tag', 'about_greeting',
+        'about_btn_contact', 'about_btn_projects', 'skills',
+        // Section titles
+        'services_tag', 'services_title',
+        'projects_tag', 'projects_title',
+        'contact_tag', 'contact_title', 'contact_form_title',
+        'contact_btn', 'contact_info_title',
+        'filter_all', 'filter_web', 'filter_mobile',
+        'featured_label', 'social_label',
+        // Contact info
+        'contact_location',
+        // SEO
+        'meta_title', 'meta_description', 'meta_keywords',
+        'og_title', 'og_description',
+    ];
+
+    /** Fields stored as a single value (no translation) */
+    private const SINGLE_FIELDS = [
+        'cv_url', 'years_experience',
+        'contact_email', 'contact_phone',
+        'site_author', 'twitter_handle',
+        'job_title_en',
+    ];
+
+    /** Image upload fields */
+    private const IMAGE_FIELDS = [
+        'hero_image', 'about_image', 'site_favicon', 'og_image',
+    ];
+
     public function index()
     {
-        $settings = Setting::pluck('value', 'key');
-        return view('admin.settings', compact('settings'));
+        // For admin, fetch raw rows so we can edit AR + EN separately
+        $rows = Setting::all()->keyBy('key');
+        return view('admin.settings', compact('rows'));
     }
 
     public function update(Request $request)
     {
-        $fields = [
-            // Hero
-            'hero_name', 'hero_title', 'hero_subtitle', 'hero_description',
-            'hero_btn_projects', 'hero_btn_cv', 'cv_url', 'typed_strings',
-            // Stats
-            'years_experience', 'stat_years_label', 'stat_projects_label', 'stat_services_label',
-            // About
-            'about_text', 'about_tag', 'about_greeting', 'about_btn_contact', 'about_btn_projects', 'skills',
-            // Section titles
-            'services_tag', 'services_title',
-            'projects_tag', 'projects_title',
-            'contact_tag', 'contact_title', 'contact_form_title', 'contact_btn', 'contact_info_title',
-            'filter_all', 'filter_web', 'filter_mobile', 'featured_label', 'social_label',
-            // Contact info
-            'contact_email', 'contact_phone', 'contact_location',
-            // SEO
-            'meta_title', 'meta_description',
-        ];
+        // Bilingual textual fields
+        foreach (self::BILINGUAL_FIELDS as $field) {
+            Setting::set(
+                $field,
+                $request->input($field, ''),
+                $request->input($field . '_en')
+            );
+        }
 
-        foreach ($fields as $field) {
+        // Single-locale fields
+        foreach (self::SINGLE_FIELDS as $field) {
             Setting::set($field, $request->input($field, ''));
         }
 
-        if ($request->hasFile('hero_image')) {
-            $old = Setting::get('hero_image');
-            if ($old) Storage::disk('public')->delete($old);
-            $path = $request->file('hero_image')->store('settings', 'public');
-            Setting::set('hero_image', $path);
+        // Image uploads
+        foreach (self::IMAGE_FIELDS as $field) {
+            if ($request->hasFile($field)) {
+                $old = Setting::where('key', $field)->value('value');
+                if ($old) Storage::disk('public')->delete($old);
+                $path = $request->file($field)->store('settings', 'public');
+                Setting::set($field, $path);
+            }
         }
 
-        if ($request->hasFile('about_image')) {
-            $old = Setting::get('about_image');
-            if ($old) Storage::disk('public')->delete($old);
-            $path = $request->file('about_image')->store('settings', 'public');
-            Setting::set('about_image', $path);
-        }
-
-        // Ensure storage is accessible (handles both symlink and copy methods)
-        if (!is_link(public_path('storage'))) {
+        // Ensure storage is accessible
+        if (! is_link(public_path('storage'))) {
             Artisan::call('storage:copy');
         }
 

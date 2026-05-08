@@ -21,11 +21,13 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'title'       => 'required|string|max:200',
-            'description' => 'required|string',
-            'icon'        => 'required|string|max:100',
-            'order'       => 'integer|min:0',
-            'active'      => 'boolean',
+            'title'           => 'required|string|max:200',
+            'title_en'        => 'nullable|string|max:200',
+            'description'     => 'required|string',
+            'description_en'  => 'nullable|string',
+            'icon'            => 'required|string|max:100',
+            'order'           => 'integer|min:0',
+            'active'          => 'boolean',
         ]);
 
         $data['active'] = $request->boolean('active');
@@ -42,11 +44,13 @@ class ServiceController extends Controller
     public function update(Request $request, Service $service)
     {
         $data = $request->validate([
-            'title'       => 'required|string|max:200',
-            'description' => 'required|string',
-            'icon'        => 'required|string|max:100',
-            'order'       => 'integer|min:0',
-            'active'      => 'boolean',
+            'title'           => 'required|string|max:200',
+            'title_en'        => 'nullable|string|max:200',
+            'description'     => 'required|string',
+            'description_en'  => 'nullable|string',
+            'icon'            => 'required|string|max:100',
+            'order'           => 'integer|min:0',
+            'active'          => 'boolean',
         ]);
 
         $data['active'] = $request->boolean('active');

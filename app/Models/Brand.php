@@ -1,14 +1,25 @@
 <?php
+
 namespace App\Models;
 
 use App\Models\Concerns\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 
-class Service extends Model
+class Brand extends Model
 {
     use HasTranslations;
 
-    protected $fillable = ['title', 'title_en', 'description', 'description_en', 'icon', 'order', 'active'];
+    protected $fillable = [
+        'name',
+        'logo',
+        'icon',
+        'website',
+        'contribution',
+        'contribution_en',
+        'order',
+        'active',
+    ];
+
     protected $casts = ['active' => 'boolean'];
 
     public function scopeActive($query)  { return $query->where('active', true); }
