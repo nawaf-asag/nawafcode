@@ -135,6 +135,10 @@
 html {
     scroll-behavior: smooth;
     scroll-padding-top: 80px;
+    /* Always reserve space for the vertical scrollbar to prevent
+       a layout shift the moment content becomes scrollable. */
+    scrollbar-gutter: stable;
+    overflow-y: scroll; /* fallback for browsers without scrollbar-gutter */
 }
 
 body {
@@ -142,8 +146,8 @@ body {
     font-family: 'Cairo', 'Inter', system-ui, sans-serif;
     background-color: var(--bg-1);
     color: var(--text);
-    overflow-x: hidden;
-    max-width: 100vw;
+    overflow-x: clip;     /* clip is more reliable than hidden, no scroll context */
+    width: 100%;
     transition: background-color 0.4s ease, color 0.4s ease;
 }
 
@@ -198,6 +202,7 @@ img { max-width: 100%; height: auto; display: block; }
     border-bottom: 1px solid var(--card-border);
     transition: padding var(--transition), box-shadow var(--transition), background-color 0.4s ease;
     padding: 1rem 0;
+    inset-inline: 0;     /* navbar fills viewport width that's left after scrollbar gutter */
 }
 
 .navbar.scrolled {
@@ -291,7 +296,6 @@ img { max-width: 100%; height: auto; display: block; }
     position: relative;
     overflow: hidden;
     width: 100%;
-    max-width: 100vw;
 }
 
 .hero-row {
