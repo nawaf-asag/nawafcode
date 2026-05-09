@@ -4,10 +4,10 @@
 
 /* ===== THEME VARIABLES ===== */
 :root {
-    /* Brand Colors — Steel Blue + Green spectrum (deep ocean → lime) */
+    /* Brand Colors — Monochromatic Steel Blue (darker shades only) */
     --primary: #2277ac;          /* steel blue (user-specified) */
-    --primary-dark: #1c6394;     /* darker steel blue */
-    --secondary: #84cc16;        /* lime — fresh contrast */
+    --primary-dark: #1c6394;     /* darker (hover/active) */
+    --secondary: #134d75;        /* deep navy (darkest shade) */
     --accent: #f59e0b;           /* amber */
     --success: #10b981;
     --danger: #ef4444;
@@ -26,7 +26,7 @@
     --input-bg-focus: rgba(255, 255, 255, 0.08);
 
     /* Effects */
-    --gradient: linear-gradient(135deg, #2277ac 0%, #14b8a6 45%, #84cc16 100%);
+    --gradient: linear-gradient(135deg, #2277ac 0%, #1c6394 50%, #134d75 100%);
     --shadow-md: 0 8px 25px rgba(34, 119, 172, 0.25);
     --shadow-lg: 0 20px 40px rgba(34, 119, 172, 0.15);
     --transition: 0.3s ease;
@@ -319,7 +319,7 @@ img { max-width: 100%; height: auto; display: block; }
 #hero::after {
     width: clamp(220px, 35vw, 400px);
     height: clamp(220px, 35vw, 400px);
-    background: radial-gradient(circle, rgba(132,204,22,0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(19,77,117,0.1) 0%, transparent 70%);
     bottom: -50px;
     inset-inline-start: -50px;
 }
@@ -561,7 +561,7 @@ section { padding: clamp(3rem, 8vw, 5rem) 0; }
 .about-img-box {
     width: 100%;
     aspect-ratio: 1 / 0.88;
-    background: linear-gradient(135deg, rgba(34,119,172,0.2), rgba(132,204,22,0.2));
+    background: linear-gradient(135deg, rgba(34,119,172,0.2), rgba(19,77,117,0.2));
     border-radius: var(--radius-xl);
     border: 1px solid rgba(34, 119, 172, 0.2);
     overflow: hidden;
@@ -772,7 +772,7 @@ section { padding: clamp(3rem, 8vw, 5rem) 0; }
 
 .project-img {
     aspect-ratio: 16 / 10;
-    background: linear-gradient(135deg, rgba(34,119,172,0.3), rgba(132,204,22,0.3));
+    background: linear-gradient(135deg, rgba(34,119,172,0.3), rgba(19,77,117,0.3));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -828,7 +828,7 @@ section { padding: clamp(3rem, 8vw, 5rem) 0; }
 
 .project-category {
     display: inline-block;
-    background: rgba(132, 204, 22, 0.15);
+    background: rgba(19, 77, 117, 0.15);
     color: var(--secondary);
     padding: 0.2rem 0.8rem;
     border-radius: var(--radius-pill);
@@ -1515,7 +1515,7 @@ footer p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
     inset-inline-start: 0;
     width: 0%;
     height: 3px;
-    background: linear-gradient(90deg, #2277ac 0%, #84cc16 50%, #10b981 100%);
+    background: linear-gradient(90deg, #4a96c4 0%, #2277ac 50%, #134d75 100%);
     z-index: 1000;
     transition: width 0.1s linear;
     box-shadow: 0 0 10px rgba(34, 119, 172, 0.5);
@@ -1588,13 +1588,13 @@ footer p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
 }
 
 .hero-name::before {
-    color: #84cc16;
+    color: #134d75;
     animation: glitch-1 7s infinite;
     clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
 }
 
 .hero-name::after {
-    color: #84cc16;
+    color: #134d75;
     animation: glitch-2 7s infinite;
     clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
 }
@@ -1639,7 +1639,7 @@ footer p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
     aspect-ratio: 1;
     height: auto;
     border-radius: 50%;
-    background: conic-gradient(from 90deg, #2277ac, #14b8a6, #10b981, #84cc16, #f59e0b, #2277ac);
+    background: conic-gradient(from 90deg, #4a96c4, #2277ac, #1c6394, #134d75, #1c6394, #2277ac, #4a96c4);
     filter: blur(80px);
     opacity: 0.16;
     animation: blob-drift 18s ease-in-out infinite;
