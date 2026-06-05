@@ -6,17 +6,29 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\ExperienceController;
+use App\Http\Controllers\Admin\EducationController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\SocialLinkController;
 use App\Http\Controllers\Admin\SettingController;
 
-// Frontend
+// Frontend — Arabic (default, root URLs)
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::post('/contact', [HomeController::class, 'contact'])->name('contact');
 
-// Language switcher
+// Frontend — English (dedicated, crawlable URLs for SEO)
+Route::prefix('en')->name('en.')->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::post('/contact', [HomeController::class, 'contact'])->name('contact');
+});
+
+// SEO: sitemap + robots
+Route::get('/sitemap.xml', [HomeController::class, 'sitemap'])->name('sitemap');
+Route::get('/robots.txt', [HomeController::class, 'robots'])->name('robots');
+
+// Language switcher (legacy session route, kept for backward compatibility)
 Route::get('/lang/{locale}', [LanguageController::class, 'switch'])
     ->whereIn('locale', ['ar', 'en'])
     ->name('lang.switch');
@@ -46,9 +58,11 @@ Route::post('/admin/logout', function (\Illuminate\Http\Request $request) {
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::resource('services', ServiceController::class)->except(['show']);
-    Route::resource('projects', ProjectController::class)->except(['show']);
-    Route::resource('brands',   BrandController::class)->except(['show']);
+    Route::resource('services',    ServiceController::class)->except(['show']);
+    Route::resource('projects',    ProjectController::class)->except(['show']);
+    Route::resource('experiences', ExperienceController::class)->except(['show']);
+    Route::resource('education',   EducationController::class)->parameters(['education' => 'education'])->except(['show']);
+    Route::resource('brands',      BrandController::class)->except(['show']);
 
     // Media library
     Route::get   ('media',                  [MediaController::class, 'index'])  ->name('media.index');

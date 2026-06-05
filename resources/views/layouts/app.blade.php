@@ -5,7 +5,7 @@
     // SEO values — all settings are already localized via Setting::localizedAll()
     $seoTitle       = $settings['meta_title']       ?? __('site.meta_title');
     $seoDescription = $settings['meta_description'] ?? __('site.meta_description');
-    $seoKeywords    = $settings['meta_keywords']    ?? '';
+    $seoKeywords    = ($settings['meta_keywords'] ?? '') ?: __('site.meta_keywords');
     $author         = $settings['site_author']      ?? 'Nawaf Asag';
     $jobTitle       = $settings['job_title_en']     ?? 'Full Stack Developer';
     $twitterHandle  = $settings['twitter_handle']   ?? '';
@@ -20,8 +20,11 @@
     $faviconPath = $settings['site_favicon'] ?? null;
     $faviconUrl  = $faviconPath ? asset('storage/'.$faviconPath) : asset('favicon.ico');
 
-    $canonical    = url()->current();
-    $alternateUrl = route('lang.switch', $locale === 'ar' ? 'en' : 'ar');
+    // Per-locale crawlable URLs (/ = Arabic, /en = English)
+    $arUrl        = url('/');
+    $enUrl        = url('/en');
+    $canonical    = $locale === 'en' ? $enUrl : $arUrl;
+    $alternateUrl = $locale === 'en' ? $arUrl : $enUrl;   // "other language" URL for the toggle
     $ogLocale     = $locale === 'ar' ? 'ar_SA' : 'en_US';
     $ogLocaleAlt  = $locale === 'ar' ? 'en_US' : 'ar_SA';
 @endphp
@@ -43,10 +46,11 @@
     <meta name="robots"        content="index, follow, max-image-preview:large">
     <meta name="googlebot"     content="index, follow">
 
-    {{-- Canonical + Hreflang --}}
+    {{-- Canonical + reciprocal Hreflang (both languages, self-referencing) --}}
     <link rel="canonical" href="{{ $canonical }}">
-    <link rel="alternate" hreflang="{{ $locale === 'ar' ? 'en' : 'ar' }}" href="{{ $alternateUrl }}">
-    <link rel="alternate" hreflang="x-default" href="{{ url('/') }}">
+    <link rel="alternate" hreflang="ar" href="{{ $arUrl }}">
+    <link rel="alternate" hreflang="en" href="{{ $enUrl }}">
+    <link rel="alternate" hreflang="x-default" href="{{ $arUrl }}">
 
     {{-- ===== Open Graph (Facebook, LinkedIn, WhatsApp...) ===== --}}
     <meta property="og:type"        content="profile">
@@ -82,26 +86,102 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{ $faviconUrl }}">
     <link rel="shortcut icon" href="{{ $faviconUrl }}">
 
-    {{-- ===== Structured Data (JSON-LD) — Person schema for Google rich result ===== --}}
+    {{-- ===== Structured Data (JSON-LD @graph) — rich result + sitelinks signals ===== --}}
     <script type="application/ld+json">
     @php
-        $structured = array_filter([
-            '@context'    => 'https://schema.org',
-            '@type'       => 'Person',
+        $personId  = $arUrl . '#person';
+        $siteId    = $arUrl . '#website';
+        $personImg = isset($settings['hero_image']) ? asset('storage/'.$settings['hero_image']) : ($ogImage ?: null);
+        $keywords  = array_values(array_filter(array_map('trim', explode(',', $seoKeywords))));
+
+        // Navigation sections — helps Google understand structure (sitelinks signal)
+        $navSections = [
+            ['name' => __('site.nav_about'),      'frag' => '#about'],
+            ['name' => __('site.nav_experience'), 'frag' => '#experience'],
+            ['name' => __('site.nav_education'),  'frag' => '#education'],
+            ['name' => __('site.nav_services'),   'frag' => '#services'],
+            ['name' => __('site.nav_projects'),   'frag' => '#projects'],
+            ['name' => __('site.nav_brands'),     'frag' => '#brands'],
+            ['name' => __('site.nav_contact'),    'frag' => '#contact'],
+        ];
+
+        $graph = [];
+
+        // WebSite
+        $graph[] = array_filter([
+            '@type'       => 'WebSite',
+            '@id'         => $siteId,
+            'url'         => $arUrl,
             'name'        => $author,
-            'alternateName' => $locale === 'ar' ? ($settings['hero_name'] ?? null) : null,
-            'jobTitle'    => $jobTitle,
             'description' => $seoDescription,
-            'url'         => url('/'),
-            'image'       => isset($settings['hero_image']) ? asset('storage/'.$settings['hero_image']) : ($ogImage ?: null),
-            'email'       => $settings['contact_email']    ?? null,
-            'telephone'   => $settings['contact_phone']    ?? null,
-            'address'     => isset($settings['contact_location']) ? [
+            'inLanguage'  => ['ar', 'en'],
+        ]);
+
+        // Person (the star of the page)
+        $graph[] = array_filter([
+            '@type'         => 'Person',
+            '@id'           => $personId,
+            'name'          => $author,
+            'alternateName' => $settings['hero_name'] ?? null,
+            'jobTitle'      => $locale === 'ar' ? ($settings['hero_subtitle'] ?? $jobTitle) : $jobTitle,
+            'description'   => $seoDescription,
+            'url'           => $canonical,
+            'image'         => $personImg,
+            'email'         => $settings['contact_email'] ?? null,
+            'telephone'     => $settings['contact_phone'] ?? null,
+            'knowsAbout'    => $keywords ?: null,
+            'address'       => isset($settings['contact_location']) ? [
                 '@type' => 'PostalAddress',
                 'addressLocality' => $settings['contact_location'],
             ] : null,
-            'sameAs'      => isset($socialLinks) ? $socialLinks->pluck('url')->filter()->values()->all() : null,
+            'alumniOf'      => (isset($education) && $education->count()) ? [
+                '@type' => 'CollegeOrUniversity',
+                'name'  => $education->first()->localized('institution'),
+            ] : null,
+            'worksFor'      => (isset($experiences) && $experiences->where('is_current', true)->count()) ? [
+                '@type' => 'Organization',
+                'name'  => $experiences->where('is_current', true)->first()->localized('company'),
+            ] : null,
+            'sameAs'        => isset($socialLinks) ? $socialLinks->pluck('url')->filter()->values()->all() : null,
         ]);
+
+        // ProfilePage
+        $graph[] = array_filter([
+            '@type'              => 'ProfilePage',
+            '@id'                => $canonical . '#webpage',
+            'url'                => $canonical,
+            'name'               => $seoTitle,
+            'description'        => $seoDescription,
+            'inLanguage'         => $locale,
+            'isPartOf'           => ['@id' => $siteId],
+            'about'              => ['@id' => $personId],
+            'primaryImageOfPage' => $ogImage ?: $personImg,
+        ]);
+
+        // Section navigation links
+        foreach ($navSections as $i => $s) {
+            $graph[] = [
+                '@type'    => 'SiteNavigationElement',
+                'position' => $i + 1,
+                'name'     => $s['name'],
+                'url'      => $canonical . $s['frag'],
+            ];
+        }
+
+        // Services as an ItemList
+        if (isset($services) && $services->count()) {
+            $graph[] = [
+                '@type'           => 'ItemList',
+                'name'            => $locale === 'ar' ? 'الخدمات' : 'Services',
+                'itemListElement' => $services->values()->map(fn ($s, $i) => [
+                    '@type'    => 'ListItem',
+                    'position' => $i + 1,
+                    'name'     => $s->localized('title'),
+                ])->all(),
+            ];
+        }
+
+        $structured = ['@context' => 'https://schema.org', '@graph' => $graph];
     @endphp
     {!! json_encode($structured, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
     </script>
@@ -110,16 +190,29 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="dns-prefetch" href="https://unpkg.com">
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
 
+    {{-- Bootstrap grid/layout — render-critical, kept blocking to avoid layout shift --}}
     @if($dir === 'rtl')
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
     @else
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     @endif
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    {{-- Non-critical CSS — loaded asynchronously so it never blocks first paint --}}
+    <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" as="style" href="https://unpkg.com/aos@2.3.1/dist/aos.css" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
+        <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    </noscript>
+
+    {{-- Preload the LCP hero image so it paints sooner --}}
+    @if(!empty($settings['hero_image']))
+        <link rel="preload" as="image" href="{{ asset('storage/'.$settings['hero_image']) }}" fetchpriority="high">
+    @endif
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -189,6 +282,8 @@
         <div class="collapse navbar-collapse" id="navMenu">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a class="nav-link" href="#about">{{ __('site.nav_about') }}</a></li>
+                <li class="nav-item"><a class="nav-link" href="#experience">{{ __('site.nav_experience') }}</a></li>
+                <li class="nav-item"><a class="nav-link" href="#education">{{ __('site.nav_education') }}</a></li>
                 <li class="nav-item"><a class="nav-link" href="#services">{{ __('site.nav_services') }}</a></li>
                 <li class="nav-item"><a class="nav-link" href="#projects">{{ __('site.nav_projects') }}</a></li>
                 <li class="nav-item"><a class="nav-link" href="#brands">{{ __('site.nav_brands') }}</a></li>
@@ -196,11 +291,11 @@
             </ul>
 
             <div class="d-flex align-items-center gap-2 flex-wrap justify-content-center">
-                <!-- Language toggle -->
-                <a href="{{ route('lang.switch', app()->getLocale() === 'ar' ? 'en' : 'ar') }}"
+                <!-- Language toggle (links to the other language's dedicated URL) -->
+                <a href="{{ $alternateUrl }}" hreflang="{{ $locale === 'ar' ? 'en' : 'ar' }}"
                    class="lang-toggle" aria-label="{{ __('site.toggle_language') }}">
                     <i class="bi bi-translate" aria-hidden="true"></i>
-                    <span>{{ app()->getLocale() === 'ar' ? 'EN' : 'عربي' }}</span>
+                    <span>{{ $locale === 'ar' ? 'EN' : 'عربي' }}</span>
                 </a>
 
                 <!-- Theme toggle -->

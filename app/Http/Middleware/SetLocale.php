@@ -12,7 +12,10 @@ class SetLocale
 
     public function handle(Request $request, Closure $next): Response
     {
-        $locale = session('locale', config('app.locale', 'ar'));
+        // Locale is driven by the URL so each language has its own crawlable
+        // address (/ = Arabic, /en = English). This is what lets Google index
+        // both languages instead of a single session-dependent page.
+        $locale = $request->segment(1) === 'en' ? 'en' : 'ar';
 
         if (! in_array($locale, self::SUPPORTED, true)) {
             $locale = 'ar';

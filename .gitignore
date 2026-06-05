@@ -16,6 +16,7 @@
 # /public/build  -- tracked so cPanel deploys don't need Node
 /public/hot
 /public/storage
+/public/*.zip
 /storage/*.key
 /storage/pail
 /vendor

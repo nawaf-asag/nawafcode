@@ -442,6 +442,12 @@
         <a href="{{ route('admin.projects.index') }}" class="sidebar-link {{ request()->routeIs('admin.projects.*') ? 'active' : '' }}">
             <i class="bi bi-grid-3x3-gap"></i> الأعمال
         </a>
+        <a href="{{ route('admin.experiences.index') }}" class="sidebar-link {{ request()->routeIs('admin.experiences.*') ? 'active' : '' }}">
+            <i class="bi bi-briefcase-fill"></i> الخبرة المهنية
+        </a>
+        <a href="{{ route('admin.education.index') }}" class="sidebar-link {{ request()->routeIs('admin.education.*') ? 'active' : '' }}">
+            <i class="bi bi-mortarboard"></i> التعليم الأكاديمي
+        </a>
         <a href="{{ route('admin.brands.index') }}" class="sidebar-link {{ request()->routeIs('admin.brands.*') ? 'active' : '' }}">
             <i class="bi bi-award"></i> البراندات
         </a>

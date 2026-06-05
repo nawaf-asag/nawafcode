@@ -55,6 +55,12 @@
                     <a href="{{ route('admin.projects.create') }}" class="btn-primary-admin">
                         <i class="bi bi-plus-circle"></i> إضافة مشروع
                     </a>
+                    <a href="{{ route('admin.experiences.create') }}" class="btn-primary-admin">
+                        <i class="bi bi-plus-circle"></i> إضافة خبرة
+                    </a>
+                    <a href="{{ route('admin.education.create') }}" class="btn-primary-admin">
+                        <i class="bi bi-plus-circle"></i> إضافة مؤهل
+                    </a>
                     <a href="{{ route('admin.socials.create') }}" class="btn-primary-admin">
                         <i class="bi bi-plus-circle"></i> إضافة رابط اجتماعي
                     </a>

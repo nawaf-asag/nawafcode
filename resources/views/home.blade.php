@@ -149,13 +149,112 @@
     </div>
 </section>
 
+<!-- ===== EXPERIENCE ===== -->
+@if($experiences->count())
+<section id="experience">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <div class="section-heading">
+                <div class="section-tag"><i class="bi bi-briefcase me-1"></i> {{ __('site.experience_tag') }}</div>
+                <h2 class="section-title">{{ __('site.experience_title') }}</h2>
+            </div>
+        </div>
+
+        <div class="timeline">
+            @foreach($experiences as $i => $exp)
+                @php
+                    $expPeriod = $exp->year_from;
+                    if ($exp->is_current) {
+                        $expPeriod = $exp->year_from . ' — ' . __('site.year_present');
+                    } elseif ($exp->year_to && $exp->year_to != $exp->year_from) {
+                        $expPeriod = $exp->year_from . ' — ' . $exp->year_to;
+                    }
+                @endphp
+                <div class="timeline-item" data-aos="fade-up" data-aos-delay="{{ ($i % 3) * 100 }}">
+                    <div class="timeline-marker"><i class="bi bi-briefcase-fill" aria-hidden="true"></i></div>
+                    <div class="timeline-card">
+                        <div class="timeline-card-head">
+                            @if($exp->year_from)
+                                <span class="timeline-period">
+                                    <i class="bi bi-calendar3 me-1"></i>{{ $expPeriod }}
+                                </span>
+                            @endif
+                            @if($exp->is_current)
+                                <span class="timeline-badge">
+                                    <span class="timeline-dot"></span>{{ __('site.support_active') }}
+                                </span>
+                            @endif
+                        </div>
+                        <h3 class="timeline-role">{{ $exp->localized('role') }}</h3>
+                        <div class="timeline-company"><i class="bi bi-building me-1"></i>{{ $exp->localized('company') }}</div>
+                        @if($exp->localized('description'))
+                            <p class="timeline-desc">{{ $exp->localized('description') }}</p>
+                        @endif
+                        @if($exp->technologies_array)
+                            <div class="timeline-tags">
+                                @foreach($exp->technologies_array as $tag)
+                                    <span class="tech-tag">{{ $tag }}</span>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
+<!-- ===== EDUCATION ===== -->
+@if($education->count())
+<section id="education">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <div class="section-heading">
+                <div class="section-tag"><i class="bi bi-mortarboard me-1"></i> {{ __('site.education_tag') }}</div>
+                <h2 class="section-title">{{ __('site.education_title') }}</h2>
+            </div>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            @foreach($education as $i => $edu)
+                @php
+                    $eduPeriod = $edu->year_from;
+                    if ($edu->is_current) {
+                        $eduPeriod = $edu->year_from . ' — ' . __('site.year_present');
+                    } elseif ($edu->year_to && $edu->year_to != $edu->year_from) {
+                        $eduPeriod = $edu->year_from . ' — ' . $edu->year_to;
+                    }
+                @endphp
+                <div class="col-lg-7 col-md-9" data-aos="fade-up" data-aos-delay="{{ ($i % 2) * 100 }}">
+                    <div class="education-card">
+                        <div class="education-icon"><i class="bi bi-mortarboard-fill" aria-hidden="true"></i></div>
+                        <div class="education-body">
+                            @if($edu->year_from)
+                                <span class="education-period"><i class="bi bi-calendar3 me-1"></i>{{ $eduPeriod }}</span>
+                            @endif
+                            <h3 class="education-degree">{{ $edu->localized('degree') }}</h3>
+                            <div class="education-place"><i class="bi bi-geo-alt me-1"></i>{{ $edu->localized('institution') }}</div>
+                            @if($edu->localized('note'))
+                                <div class="education-note"><i class="bi bi-award-fill me-1"></i>{{ $edu->localized('note') }}</div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
 <!-- ===== SERVICES ===== -->
 <section id="services">
     <div class="container">
         <div class="section-header" data-aos="fade-up">
-            <div class="section-tag"><i class="bi bi-briefcase me-1"></i> {{ __('site.services_tag') }}</div>
-            <h2 class="section-title">{{ __('site.services_title') }}</h2>
-            <div class="section-divider"></div>
+            <div class="section-heading">
+                <div class="section-tag"><i class="bi bi-briefcase me-1"></i> {{ __('site.services_tag') }}</div>
+                <h2 class="section-title">{{ __('site.services_title') }}</h2>
+            </div>
         </div>
 
         <div class="row g-4">
@@ -178,9 +277,10 @@
 <section id="projects">
     <div class="container">
         <div class="section-header" data-aos="fade-up">
-            <div class="section-tag"><i class="bi bi-grid me-1"></i> {{ __('site.projects_tag') }}</div>
-            <h2 class="section-title">{{ __('site.projects_title') }}</h2>
-            <div class="section-divider"></div>
+            <div class="section-heading">
+                <div class="section-tag"><i class="bi bi-grid me-1"></i> {{ __('site.projects_tag') }}</div>
+                <h2 class="section-title">{{ __('site.projects_title') }}</h2>
+            </div>
         </div>
 
         <div class="filter-btns" data-aos="fade-up">
@@ -318,10 +418,11 @@
 <section id="brands">
     <div class="container">
         <div class="section-header" data-aos="fade-up">
-            <div class="section-tag"><i class="bi bi-award me-1"></i> {{ __('site.brands_tag') }}</div>
-            <h2 class="section-title">{{ __('site.brands_title') }}</h2>
-            <p class="brands-subtitle">{{ __('site.brands_subtitle') }}</p>
-            <div class="section-divider"></div>
+            <div class="section-heading">
+                <div class="section-tag"><i class="bi bi-award me-1"></i> {{ __('site.brands_tag') }}</div>
+                <h2 class="section-title">{{ __('site.brands_title') }}</h2>
+                <p class="brands-subtitle">{{ __('site.brands_subtitle') }}</p>
+            </div>
         </div>
 
         <div class="brands-slider" data-aos="fade-up">
@@ -371,9 +472,10 @@
 <section id="contact">
     <div class="container">
         <div class="section-header" data-aos="fade-up">
-            <div class="section-tag"><i class="bi bi-envelope me-1"></i> {{ __('site.contact_tag') }}</div>
-            <h2 class="section-title">{{ __('site.contact_title') }}</h2>
-            <div class="section-divider"></div>
+            <div class="section-heading">
+                <div class="section-tag"><i class="bi bi-envelope me-1"></i> {{ __('site.contact_tag') }}</div>
+                <h2 class="section-title">{{ __('site.contact_title') }}</h2>
+            </div>
         </div>
 
         <div class="row g-4">
@@ -443,7 +545,7 @@
                     </div>
                     @endif
 
-                    <form action="{{ route('contact') }}" method="POST">
+                    <form action="{{ app()->getLocale() === 'en' ? route('en.contact') : route('contact') }}" method="POST">
                         @csrf
                         <div class="row g-3">
                             <div class="col-md-6">
