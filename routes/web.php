@@ -13,15 +13,19 @@ use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\SocialLinkController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\SeoController;
+use App\Http\Controllers\Admin\AnalyticsController;
 
 // Frontend — Arabic (default, root URLs)
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::post('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::get('/services/{slug}', [HomeController::class, 'service'])->name('services.show');
 
 // Frontend — English (dedicated, crawlable URLs for SEO)
 Route::prefix('en')->name('en.')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::post('/contact', [HomeController::class, 'contact'])->name('contact');
+    Route::get('/services/{slug}', [HomeController::class, 'service'])->name('services.show');
 });
 
 // SEO: sitemap + robots
@@ -57,6 +61,7 @@ Route::post('/admin/logout', function (\Illuminate\Http\Request $request) {
 // Admin Panel (protected)
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
 
     Route::resource('services',    ServiceController::class)->except(['show']);
     Route::resource('projects',    ProjectController::class)->except(['show']);
@@ -84,4 +89,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
     Route::get('settings',  [SettingController::class, 'index'])->name('settings');
     Route::post('settings', [SettingController::class, 'update'])->name('settings.update');
+
+    Route::get('seo',  [SeoController::class, 'index'])->name('seo');
+    Route::post('seo', [SeoController::class, 'update'])->name('seo.update');
 });

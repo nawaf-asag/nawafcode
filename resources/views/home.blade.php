@@ -47,8 +47,14 @@
                         <i class="bi bi-eye"></i>
                         {{ __('site.hero_btn_projects') }}
                     </a>
-                    @if(!empty($settings['cv_url']) && $settings['cv_url'] !== '#')
-                    <a href="{{ $settings['cv_url'] }}" class="btn-outline-custom" target="_blank" rel="noopener">
+                    @php
+                        $cvHref = !empty($settings['cv_file'])
+                            ? asset('storage/'.$settings['cv_file'])
+                            : ($settings['cv_url'] ?? '');
+                    @endphp
+                    @if(!empty($cvHref) && $cvHref !== '#')
+                    <a href="{{ $cvHref }}" class="btn-outline-custom" target="_blank" rel="noopener"
+                       @if(!empty($settings['cv_file'])) download @endif>
                         <i class="bi bi-download"></i>
                         {{ __('site.hero_btn_cv') }}
                     </a>
@@ -258,7 +264,9 @@
         </div>
 
         <div class="row g-4">
+            @php $svcIsEn = app()->getLocale() === 'en'; @endphp
             @foreach($services as $index => $service)
+            @php $svcUrl = $svcIsEn ? route('en.services.show', $service->slug) : route('services.show', $service->slug); @endphp
             <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ ($index % 3) * 100 }}">
                 <div class="service-card">
                     <div class="service-icon">
@@ -266,6 +274,10 @@
                     </div>
                     <h3 class="service-title">{{ $service->localized('title') }}</h3>
                     <p class="service-desc">{{ $service->localized('description') }}</p>
+                    <a href="{{ $svcUrl }}" class="service-more">
+                        {{ __('site.service_more') }}
+                        <i class="bi bi-arrow-{{ $svcIsEn ? 'right' : 'left' }}" aria-hidden="true"></i>
+                    </a>
                 </div>
             </div>
             @endforeach

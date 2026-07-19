@@ -26,6 +26,42 @@ class HomeController extends Controller
         return view('home', compact('services', 'projects', 'experiences', 'education', 'brands', 'socialLinks', 'settings'));
     }
 
+    /**
+     * Standalone SEO landing page for a single service — its own crawlable URL
+     * (/services/{slug} and /en/services/{slug}) with per-service meta + schema.
+     */
+    public function service(string $slug)
+    {
+        $service = Service::where('slug', $slug)->where('active', true)->firstOrFail();
+
+        $related     = Service::active()->ordered()->where('id', '!=', $service->id)->take(3)->get();
+        $socialLinks = SocialLink::active()->ordered()->get();
+        $settings    = Setting::localizedAll();
+
+        $locale = app()->getLocale();
+        $arUrl  = url('/services/' . $service->slug);
+        $enUrl  = url('/en/services/' . $service->slug);
+
+        $title = $service->localized('meta_title') ?: ($service->localized('title') . ' | ' . ($settings['hero_name'] ?? config('app.name')));
+        $desc  = $service->localized('meta_description') ?: str(strip_tags($service->localized('content') ?: $service->localized('description')))->squish()->limit(160);
+        $image = $service->cover_image
+            ? asset('storage/' . $service->cover_image)
+            : (isset($settings['og_image']) && $settings['og_image'] ? asset('storage/' . $settings['og_image']) : null);
+
+        $seo = [
+            'title'       => $title,
+            'description' => (string) $desc,
+            'keywords'    => $service->localized('keywords') ?: ($settings['meta_keywords'] ?? ''),
+            'canonical'   => $locale === 'en' ? $enUrl : $arUrl,
+            'ar_url'      => $arUrl,
+            'en_url'      => $enUrl,
+            'image'       => $image,
+            'type'        => 'article',
+        ];
+
+        return view('services.show', compact('service', 'related', 'socialLinks', 'settings', 'seo'));
+    }
+
     public function contact(Request $request)
     {
         $validated = $request->validate([
@@ -51,18 +87,27 @@ class HomeController extends Controller
         $lastmod = now()->toAtomString();
 
         $urls = [
-            ['loc' => $ar, 'alt' => ['ar' => $ar, 'en' => $en]],
-            ['loc' => $en, 'alt' => ['ar' => $ar, 'en' => $en]],
+            ['loc' => $ar, 'alt' => ['ar' => $ar, 'en' => $en], 'priority' => '1.0', 'lastmod' => $lastmod],
+            ['loc' => $en, 'alt' => ['ar' => $ar, 'en' => $en], 'priority' => '1.0', 'lastmod' => $lastmod],
         ];
+
+        // One dedicated, crawlable landing page per active service (both languages).
+        foreach (Service::active()->ordered()->get() as $service) {
+            $sar = url('/services/' . $service->slug);
+            $sen = url('/en/services/' . $service->slug);
+            $mod = optional($service->updated_at)->toAtomString() ?? $lastmod;
+            $urls[] = ['loc' => $sar, 'alt' => ['ar' => $sar, 'en' => $sen], 'priority' => '0.8', 'lastmod' => $mod];
+            $urls[] = ['loc' => $sen, 'alt' => ['ar' => $sar, 'en' => $sen], 'priority' => '0.8', 'lastmod' => $mod];
+        }
 
         $xml  = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">' . "\n";
         foreach ($urls as $u) {
             $xml .= "  <url>\n";
             $xml .= "    <loc>{$u['loc']}</loc>\n";
-            $xml .= "    <lastmod>{$lastmod}</lastmod>\n";
+            $xml .= "    <lastmod>{$u['lastmod']}</lastmod>\n";
             $xml .= "    <changefreq>weekly</changefreq>\n";
-            $xml .= "    <priority>1.0</priority>\n";
+            $xml .= "    <priority>{$u['priority']}</priority>\n";
             foreach ($u['alt'] as $hl => $href) {
                 $xml .= "    <xhtml:link rel=\"alternate\" hreflang=\"{$hl}\" href=\"{$href}\"/>\n";
             }

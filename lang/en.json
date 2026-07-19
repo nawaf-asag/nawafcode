@@ -77,5 +77,15 @@
     "site.contact_success": "Your message has been sent! I will contact you shortly.",
 
     "site.scroll_top": "Back to top",
-    "site.menu": "Menu"
+    "site.menu": "Menu",
+
+    "site.nav_home": "Home",
+    "site.service_more": "Learn more",
+    "site.service_all": "All services",
+    "site.service_related": "Related services",
+    "site.service_keywords_title": "Areas & keywords",
+    "site.service_faq_title": "Frequently asked questions",
+    "site.service_cta_title": "Have a project?",
+    "site.service_cta_text": "Get in touch now to turn your idea into a professional, high-performance product.",
+    "site.service_cta_btn": "Request this service"
 }

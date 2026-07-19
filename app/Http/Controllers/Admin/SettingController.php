@@ -29,22 +29,17 @@ class SettingController extends Controller
         'featured_label', 'social_label',
         // Contact info
         'contact_location',
-        // SEO
-        'meta_title', 'meta_description', 'meta_keywords',
-        'og_title', 'og_description',
     ];
 
     /** Fields stored as a single value (no translation) */
     private const SINGLE_FIELDS = [
         'cv_url', 'years_experience',
         'contact_email', 'contact_phone',
-        'site_author', 'twitter_handle',
-        'job_title_en',
     ];
 
     /** Image upload fields */
     private const IMAGE_FIELDS = [
-        'hero_image', 'about_image', 'site_favicon', 'og_image',
+        'hero_image', 'about_image',
     ];
 
     public function index()
@@ -85,6 +80,15 @@ class SettingController extends Controller
             } elseif ($request->has($field . '_path')) {
                 Setting::set($field, $request->input($field . '_path') ?: '');
             }
+        }
+
+        // CV file (PDF/DOC) — uploaded document takes priority over the external link
+        if ($request->hasFile('cv_file')) {
+            $request->validate(['cv_file' => 'file|mimes:pdf,doc,docx|max:8192']);
+            $path = $request->file('cv_file')->store('cv', 'public');
+            Setting::set('cv_file', $path);
+        } elseif ($request->boolean('cv_file_remove')) {
+            Setting::set('cv_file', '');
         }
 
         // Ensure storage is accessible

@@ -937,6 +937,21 @@ section { padding: clamp(3rem, 8vw, 5rem) 0; }
     margin: 0;
 }
 
+.service-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1.2rem;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: gap var(--transition), color var(--transition);
+}
+
+.service-more:hover { color: var(--primary-dark); gap: 0.7rem; }
+.service-card:hover .service-more { gap: 0.7rem; }
+
 /* ===== PROJECTS ===== */
 #projects { background: var(--bg-2); }
 

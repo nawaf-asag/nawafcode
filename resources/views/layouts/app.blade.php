@@ -2,36 +2,52 @@
     $locale = app()->getLocale();
     $dir = $locale === 'ar' ? 'rtl' : 'ltr';
 
+    // Optional per-page SEO overrides (e.g. a service landing page passes $seo).
+    // When absent (homepage), everything falls back to the site-wide settings.
+    $seo = $seo ?? [];
+
     // SEO values — all settings are already localized via Setting::localizedAll()
-    $seoTitle       = $settings['meta_title']       ?? __('site.meta_title');
-    $seoDescription = $settings['meta_description'] ?? __('site.meta_description');
-    $seoKeywords    = ($settings['meta_keywords'] ?? '') ?: __('site.meta_keywords');
+    $seoTitle       = ($seo['title']       ?? null) ?: ($settings['meta_title']       ?? __('site.meta_title'));
+    $seoDescription = ($seo['description'] ?? null) ?: ($settings['meta_description'] ?? __('site.meta_description'));
+    $seoKeywords    = ($seo['keywords']    ?? null) ?: (($settings['meta_keywords'] ?? '') ?: __('site.meta_keywords'));
     $author         = $settings['site_author']      ?? 'Nawaf Asag';
     $jobTitle       = $settings['job_title_en']     ?? 'Full Stack Developer';
     $twitterHandle  = $settings['twitter_handle']   ?? '';
 
     // Open Graph (falls back to meta_*)
-    $ogTitle        = ($settings['og_title']       ?? '') ?: $seoTitle;
-    $ogDescription  = ($settings['og_description'] ?? '') ?: $seoDescription;
+    $ogTitle        = ($seo['title'] ?? null) ?: (($settings['og_title'] ?? '') ?: $seoTitle);
+    $ogDescription  = ($seo['description'] ?? null) ?: (($settings['og_description'] ?? '') ?: $seoDescription);
     $ogImagePath    = $settings['og_image']        ?? null;
-    $ogImage        = $ogImagePath ? asset('storage/'.$ogImagePath) : null;
+    $ogImage        = ($seo['image'] ?? null) ?: ($ogImagePath ? asset('storage/'.$ogImagePath) : null);
+    $ogType         = $seo['type'] ?? 'profile';
 
     // Favicon
     $faviconPath = $settings['site_favicon'] ?? null;
     $faviconUrl  = $faviconPath ? asset('storage/'.$faviconPath) : asset('favicon.ico');
 
-    // Per-locale crawlable URLs (/ = Arabic, /en = English)
-    $arUrl        = url('/');
-    $enUrl        = url('/en');
-    $canonical    = $locale === 'en' ? $enUrl : $arUrl;
+    // Per-locale crawlable URLs — page-specific when provided, else the homepage.
+    $arUrl        = $seo['ar_url'] ?? url('/');
+    $enUrl        = $seo['en_url'] ?? url('/en');
+    $canonical    = $seo['canonical'] ?? ($locale === 'en' ? $enUrl : $arUrl);
     $alternateUrl = $locale === 'en' ? $arUrl : $enUrl;   // "other language" URL for the toggle
     $ogLocale     = $locale === 'ar' ? 'ar_SA' : 'en_US';
     $ogLocaleAlt  = $locale === 'ar' ? 'en_US' : 'ar_SA';
+
+    // Verification + analytics IDs (managed in the admin SEO screen)
+    $gscVerification = $settings['gsc_verification'] ?? 'Y7TWK1fkfgZ5o2xEhUVSkQpj6yEQKQ_FkG4u-Z8hKUY';
+    $bingVerification = $settings['bing_verification'] ?? null;
+    $ga4Id = $settings['ga4_id'] ?? null;
 @endphp
 <!DOCTYPE html>
 <html lang="{{ $locale }}" dir="{{ $dir }}">
 <head>
     <meta charset="UTF-8">
+    @if($gscVerification)
+        <meta name="google-site-verification" content="{{ $gscVerification }}" />
+    @endif
+    @if($bingVerification)
+        <meta name="msvalidate.01" content="{{ $bingVerification }}" />
+    @endif
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
@@ -53,7 +69,7 @@
     <link rel="alternate" hreflang="x-default" href="{{ $arUrl }}">
 
     {{-- ===== Open Graph (Facebook, LinkedIn, WhatsApp...) ===== --}}
-    <meta property="og:type"        content="profile">
+    <meta property="og:type"        content="{{ $ogType }}">
     <meta property="og:site_name"   content="{{ $author }}">
     <meta property="og:title"       content="{{ $ogTitle }}">
     <meta property="og:description" content="{{ $ogDescription }}">
@@ -145,46 +161,53 @@
             'sameAs'        => isset($socialLinks) ? $socialLinks->pluck('url')->filter()->values()->all() : null,
         ]);
 
-        // ProfilePage
-        $graph[] = array_filter([
-            '@type'              => 'ProfilePage',
-            '@id'                => $canonical . '#webpage',
-            'url'                => $canonical,
-            'name'               => $seoTitle,
-            'description'        => $seoDescription,
-            'inLanguage'         => $locale,
-            'isPartOf'           => ['@id' => $siteId],
-            'about'              => ['@id' => $personId],
-            'primaryImageOfPage' => $ogImage ?: $personImg,
-        ]);
+        // Homepage-only nodes (profile view). Inner pages (e.g. a service landing
+        // page — signalled by a non-empty $seo) push their own schema via @stack.
+        if (empty($seo)) {
+            // ProfilePage
+            $graph[] = array_filter([
+                '@type'              => 'ProfilePage',
+                '@id'                => $canonical . '#webpage',
+                'url'                => $canonical,
+                'name'               => $seoTitle,
+                'description'        => $seoDescription,
+                'inLanguage'         => $locale,
+                'isPartOf'           => ['@id' => $siteId],
+                'about'              => ['@id' => $personId],
+                'primaryImageOfPage' => $ogImage ?: $personImg,
+            ]);
 
-        // Section navigation links
-        foreach ($navSections as $i => $s) {
-            $graph[] = [
-                '@type'    => 'SiteNavigationElement',
-                'position' => $i + 1,
-                'name'     => $s['name'],
-                'url'      => $canonical . $s['frag'],
-            ];
-        }
-
-        // Services as an ItemList
-        if (isset($services) && $services->count()) {
-            $graph[] = [
-                '@type'           => 'ItemList',
-                'name'            => $locale === 'ar' ? 'الخدمات' : 'Services',
-                'itemListElement' => $services->values()->map(fn ($s, $i) => [
-                    '@type'    => 'ListItem',
+            // Section navigation links
+            foreach ($navSections as $i => $s) {
+                $graph[] = [
+                    '@type'    => 'SiteNavigationElement',
                     'position' => $i + 1,
-                    'name'     => $s->localized('title'),
-                ])->all(),
-            ];
+                    'name'     => $s['name'],
+                    'url'      => $canonical . $s['frag'],
+                ];
+            }
+
+            // Services as an ItemList
+            if (isset($services) && $services->count()) {
+                $graph[] = [
+                    '@type'           => 'ItemList',
+                    'name'            => $locale === 'ar' ? 'الخدمات' : 'Services',
+                    'itemListElement' => $services->values()->map(fn ($s, $i) => [
+                        '@type'    => 'ListItem',
+                        'position' => $i + 1,
+                        'name'     => $s->localized('title'),
+                    ])->all(),
+                ];
+            }
         }
 
         $structured = ['@context' => 'https://schema.org', '@graph' => $graph];
     @endphp
     {!! json_encode($structured, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
     </script>
+
+    {{-- Per-page structured data (service pages push Service + BreadcrumbList + FAQPage) --}}
+    @stack('structured-data')
 
     {{-- ===== Performance: preconnect to external origins ===== --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -227,6 +250,20 @@
             } catch (e) {}
         })();
     </script>
+
+    {{-- Per-page scoped styles (inner pages push their own <style> here) --}}
+    @stack('page-styles')
+
+    {{-- ===== Google Analytics 4 (loaded only when a Measurement ID is set) ===== --}}
+    @if($ga4Id)
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $ga4Id }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ $ga4Id }}');
+    </script>
+    @endif
 </head>
 <body>
 

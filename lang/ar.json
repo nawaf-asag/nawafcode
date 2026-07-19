@@ -77,5 +77,15 @@
     "site.contact_success": "تم إرسال رسالتك بنجاح! سأتواصل معك قريباً.",
 
     "site.scroll_top": "العودة للأعلى",
-    "site.menu": "القائمة"
+    "site.menu": "القائمة",
+
+    "site.nav_home": "الرئيسية",
+    "site.service_more": "التفاصيل",
+    "site.service_all": "كل الخدمات",
+    "site.service_related": "خدمات ذات صلة",
+    "site.service_keywords_title": "مجالات وكلمات مفتاحية",
+    "site.service_faq_title": "الأسئلة الشائعة",
+    "site.service_cta_title": "هل لديك مشروع؟",
+    "site.service_cta_text": "تواصل معي الآن لنحوّل فكرتك إلى منتج احترافي عالي الأداء.",
+    "site.service_cta_btn": "اطلب هذه الخدمة"
 }

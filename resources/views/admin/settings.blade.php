@@ -16,111 +16,20 @@
     @csrf
     <div class="row g-4">
 
-        {{-- ============== SEO + ICONS ============== --}}
+        {{-- ============== SEO MOVED ============== --}}
         <div class="col-12">
-            <div class="admin-card">
-                <div class="admin-card-header">
-                    <span class="admin-card-title"><i class="bi bi-search me-2"></i>إعدادات SEO والأيقونة</span>
-                    <span style="font-size:0.78rem;color:var(--text-muted);">يتحكم في كيفية ظهور موقعك في جوجل ووسائل التواصل</span>
-                </div>
-                <div class="admin-card-body">
-                    <div class="row g-3">
-
-                        <div class="col-md-6">
-                            <label class="form-label">عنوان الصفحة (Title) — عربي</label>
-                            <input type="text" name="meta_title" class="form-control"
-                                   value="{{ $val('meta_title', 'نواف عساج - مطور برمجيات Full Stack') }}"
-                                   placeholder="نواف عساج - مطور برمجيات">
-                            <small style="color:var(--text-muted);">يُفضّل 50-60 حرف</small>
+            <div class="admin-card" style="border-color:rgba(34,119,172,0.3);">
+                <div class="admin-card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-search" style="font-size:1.6rem;color:var(--primary);"></i>
+                        <div>
+                            <div style="font-weight:700;color:var(--text);">إعدادات SEO وظهور الموقع في جوجل</div>
+                            <div style="font-size:0.82rem;color:var(--text-muted);">انتقلت إلى شاشة مخصصة أكثر احترافية مع معاينة حيّة لنتيجة جوجل وربط التحليلات.</div>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label">عنوان الصفحة (Title) — English</label>
-                            <input type="text" name="meta_title_en" class="form-control" dir="ltr"
-                                   value="{{ $valEn('meta_title', 'Nawaf Asag - Full Stack Developer') }}"
-                                   placeholder="Nawaf Asag - Full Stack Developer">
-                            <small style="color:var(--text-muted);">Keep under 60 chars</small>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">وصف الموقع (Description) — عربي</label>
-                            <textarea name="meta_description" class="form-control" rows="3" maxlength="170">{{ $val('meta_description', 'نواف عساج — مطور برمجيات متخصص في Laravel وReact وFlutter. أبني تطبيقات ويب وموبايل احترافية وعالية الأداء.') }}</textarea>
-                            <small style="color:var(--text-muted);">يُفضّل 150-160 حرف</small>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">وصف الموقع (Description) — English</label>
-                            <textarea name="meta_description_en" class="form-control" rows="3" dir="ltr" maxlength="170">{{ $valEn('meta_description', 'Nawaf Asag — Full Stack Developer specialized in Laravel, React, and Flutter. Building professional, high-performance web and mobile applications.') }}</textarea>
-                            <small style="color:var(--text-muted);">Keep under 160 chars</small>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">كلمات مفتاحية (Keywords) — عربي</label>
-                            <input type="text" name="meta_keywords" class="form-control"
-                                   value="{{ $val('meta_keywords', 'مطور برمجيات, Laravel, React, تطوير ويب, تطبيقات موبايل, Full Stack') }}">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">كلمات مفتاحية (Keywords) — English</label>
-                            <input type="text" name="meta_keywords_en" class="form-control" dir="ltr"
-                                   value="{{ $valEn('meta_keywords', 'software developer, Laravel, React, web development, mobile apps, Full Stack') }}">
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="form-label">اسم المؤلف</label>
-                            <input type="text" name="site_author" class="form-control" dir="ltr"
-                                   value="{{ $val('site_author', 'Nawaf Asag') }}">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">حساب تويتر (بدون @)</label>
-                            <input type="text" name="twitter_handle" class="form-control" dir="ltr"
-                                   value="{{ $val('twitter_handle', '') }}" placeholder="username">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">المسمى الوظيفي (للـ Schema)</label>
-                            <input type="text" name="job_title_en" class="form-control" dir="ltr"
-                                   value="{{ $val('job_title_en', 'Full Stack Developer') }}">
-                        </div>
-
-                        <hr style="border-color:rgba(99,102,241,0.15);margin:0.5rem 0;">
-
-                        <div class="col-md-6">
-                            @include('admin.partials.image-picker', [
-                                'name'    => 'site_favicon',
-                                'current' => $img('site_favicon'),
-                                'label'   => 'أيقونة الموقع (Favicon)',
-                                'accept'  => 'image/png,image/jpeg,image/svg+xml,image/webp,image/x-icon',
-                            ])
-                            <small style="color:var(--text-muted);">PNG/SVG شفاف، 512×512 موصى به</small>
-                        </div>
-
-                        <div class="col-md-6">
-                            @include('admin.partials.image-picker', [
-                                'name'    => 'og_image',
-                                'current' => $img('og_image'),
-                                'label'   => 'صورة المشاركة الاجتماعية (OG Image)',
-                            ])
-                            <small style="color:var(--text-muted);">1200×630 — تظهر عند مشاركة الرابط في وسائل التواصل</small>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">عنوان OG (اختياري) — عربي</label>
-                            <input type="text" name="og_title" class="form-control"
-                                   value="{{ $val('og_title') }}" placeholder="يأخذ من Title إن تُرك فارغاً">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">عنوان OG (اختياري) — English</label>
-                            <input type="text" name="og_title_en" class="form-control" dir="ltr"
-                                   value="{{ $valEn('og_title') }}" placeholder="Falls back to Title if empty">
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">وصف OG (اختياري) — عربي</label>
-                            <textarea name="og_description" class="form-control" rows="2">{{ $val('og_description') }}</textarea>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">وصف OG (اختياري) — English</label>
-                            <textarea name="og_description_en" class="form-control" rows="2" dir="ltr">{{ $valEn('og_description') }}</textarea>
-                        </div>
-
                     </div>
+                    <a href="{{ route('admin.seo') }}" class="btn-primary-admin">
+                        <i class="bi bi-box-arrow-up-left"></i> فتح إدارة SEO
+                    </a>
                 </div>
             </div>
         </div>
@@ -192,8 +101,22 @@
                         </div>
 
                         <div class="col-md-8">
-                            <label class="form-label">رابط السيرة الذاتية (CV)</label>
-                            <input type="text" name="cv_url" class="form-control" value="{{ $val('cv_url') }}" placeholder="https://...">
+                            <label class="form-label">ملف السيرة الذاتية (CV) — PDF</label>
+                            @php $cvFile = $img('cv_file'); @endphp
+                            @if($cvFile)
+                                <div class="d-flex align-items-center gap-2 mb-2 p-2" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:10px;">
+                                    <i class="bi bi-file-earmark-pdf-fill" style="color:#6ee7b7;font-size:1.3rem;"></i>
+                                    <a href="{{ asset('storage/'.$cvFile) }}" target="_blank" rel="noopener" style="color:var(--primary);text-decoration:none;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" dir="ltr">{{ basename($cvFile) }}</a>
+                                    <label class="d-flex align-items-center gap-1" style="color:#fca5a5;font-size:0.8rem;cursor:pointer;margin:0;">
+                                        <input type="checkbox" name="cv_file_remove" value="1"> إزالة
+                                    </label>
+                                </div>
+                            @endif
+                            <input type="file" name="cv_file" class="form-control" accept="application/pdf,.pdf,.doc,.docx">
+                            <small style="color:var(--text-muted);">ارفع ملف PDF (حتى 8 ميجابايت). الملف المرفوع له الأولوية على الرابط أدناه.</small>
+
+                            <label class="form-label mt-3">أو رابط خارجي للسيرة (اختياري)</label>
+                            <input type="text" name="cv_url" class="form-control" dir="ltr" value="{{ $val('cv_url') }}" placeholder="https://...">
                         </div>
                         <div class="col-md-4">
                             @include('admin.partials.image-picker', [

@@ -467,6 +467,14 @@
             <i class="bi bi-share"></i> التواصل الاجتماعي
         </a>
 
+        <div class="nav-section-label">التسويق و SEO</div>
+        <a href="{{ route('admin.seo') }}" class="sidebar-link {{ request()->routeIs('admin.seo') ? 'active' : '' }}">
+            <i class="bi bi-search"></i> إدارة SEO
+        </a>
+        <a href="{{ route('admin.analytics') }}" class="sidebar-link {{ request()->routeIs('admin.analytics') ? 'active' : '' }}">
+            <i class="bi bi-graph-up-arrow"></i> التحليلات والإحصائيات
+        </a>
+
         <div class="nav-section-label">الإعدادات</div>
         <a href="{{ route('admin.settings') }}" class="sidebar-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
             <i class="bi bi-gear"></i> إعدادات الموقع
