@@ -479,6 +479,9 @@
         <a href="{{ route('admin.settings') }}" class="sidebar-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
             <i class="bi bi-gear"></i> إعدادات الموقع
         </a>
+        <a href="{{ route('admin.system') }}" class="sidebar-link {{ request()->routeIs('admin.system') ? 'active' : '' }}">
+            <i class="bi bi-arrow-clockwise"></i> تحديث النظام
+        </a>
     </nav>
 
     <div class="sidebar-footer">

@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\SocialLinkController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SeoController;
 use App\Http\Controllers\Admin\AnalyticsController;
+use App\Http\Controllers\Admin\SystemController;
 
 // Frontend — Arabic (default, root URLs)
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -92,4 +93,11 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
     Route::get('seo',  [SeoController::class, 'index'])->name('seo');
     Route::post('seo', [SeoController::class, 'update'])->name('seo.update');
+
+    // System update / maintenance
+    Route::get ('system',          [SystemController::class, 'index'])   ->name('system');
+    Route::post('system/check',    [SystemController::class, 'check'])   ->name('system.check');
+    Route::post('system/pull',     [SystemController::class, 'pull'])    ->name('system.pull');
+    Route::post('system/migrate',  [SystemController::class, 'migrate']) ->name('system.migrate');
+    Route::post('system/optimize', [SystemController::class, 'optimize'])->name('system.optimize');
 });
